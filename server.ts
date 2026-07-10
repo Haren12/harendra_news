@@ -164,6 +164,42 @@ Return ONLY valid JSON with keys:
   }
 });
 
+// AI Live Chat Room with Viewers
+app.post("/api/ai/chat", async (req, res) => {
+  try {
+    const { messages, userMessage } = req.body;
+    const ai = getGeminiClient();
+
+    const systemInstruction = `You are "CyberNews AI Live Anchor" (साइबरन्युज एआई लाइभ एङ्कर), an intelligent, friendly, and expert news correspondent and discussion moderator on CyberNews AI & HarendraLamsal Media Cockpit. 
+You are chatting live with viewers who are tuning in to our news portal. 
+You can converse fluently in both English and Nepali (नेपाली). 
+Keep answers engaging, informative, journalistic, professional, and concise (under 3-4 sentences unless explaining deep tech/news topics). 
+If a user writes in Nepali, reply warmly in Nepali. If in English, reply in English.`;
+
+    const formattedHistory = (messages || []).map((m: any) => ({
+      role: m.sender === 'ai' ? 'model' : 'user',
+      parts: [{ text: m.text }]
+    }));
+
+    const chat = ai.chats.create({
+      model: "gemini-2.5-flash",
+      config: {
+        systemInstruction,
+      },
+      history: formattedHistory,
+    });
+
+    const response = await chat.sendMessage({
+      message: userMessage || "Hello AI Live Anchor",
+    });
+
+    res.json({ reply: response.text });
+  } catch (error: any) {
+    console.error("AI Chat error:", error);
+    res.status(500).json({ error: error.message || "AI chat service unavailable." });
+  }
+});
+
 // Vite middleware setup for development / static for production
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {

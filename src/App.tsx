@@ -14,6 +14,7 @@ import { SupabaseConfigModal } from './components/SupabaseConfigModal';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { Footer } from './components/Footer';
 import { NepaliPatroModal } from './components/NepaliPatroModal';
+import { LiveAIChatWidget } from './components/LiveAIChatWidget';
 import { Language } from './utils/translations';
 
 export default function App() {
@@ -247,6 +248,8 @@ export default function App() {
           currentLanguage={currentLanguage}
         />
       )}
+
+      <LiveAIChatWidget />
     </div>
   );
 }

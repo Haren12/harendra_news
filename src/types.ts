@@ -56,6 +56,7 @@ export interface Comment {
 export interface Article {
   id: string;
   title: string;
+  slug?: string;
   subtitle: string;
   content: string;
   category: Category;

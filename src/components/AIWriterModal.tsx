@@ -21,6 +21,31 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
   // Manual & Full Editorial Form state (English & Nepali dual inputs)
   const [titleEn, setTitleEn] = useState('');
   const [titleNe, setTitleNe] = useState('');
+  const generateSlug = (text: string) => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-\u0900-\u097F]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '') || `news-${Date.now()}`;
+  };
+
+  const [slug, setSlug] = useState('');
+  const [isManualSlug, setIsManualSlug] = useState(false);
+
+  const handleTitleEnChange = (val: string) => {
+    setTitleEn(val);
+    if (!isManualSlug) {
+      setSlug(generateSlug(val));
+    }
+  };
+
+  const handleTitleNeChange = (val: string) => {
+    setTitleNe(val);
+    if (!isManualSlug && !titleEn) {
+      setSlug(generateSlug(val));
+    }
+  };
   const [excerptEn, setExcerptEn] = useState('');
   const [excerptNe, setExcerptNe] = useState('');
   const [contentEn, setContentEn] = useState('');
@@ -118,9 +143,11 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
     const finalExcerpt = excerptEn.trim() ? excerptEn : excerptNe;
     const tagsArray = tagsStr.split(',').map(t => t.trim()).filter(Boolean);
 
+    const finalSlug = slug.trim() ? slug : generateSlug(finalTitle);
     const newArticle: Article = {
       id: `art-custom-${Date.now()}`,
       title: finalTitle,
+      slug: finalSlug,
       subtitle: finalExcerpt || 'Published via Harendralamsal Editorial Cockpit.',
       content: finalContent,
       category: selectedCategory,
@@ -360,7 +387,7 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
                       type="text"
                       required
                       value={titleEn}
-                      onChange={(e) => setTitleEn(e.target.value)}
+                      onChange={(e) => handleTitleEnChange(e.target.value)}
                       placeholder="Enter breaking news title in English..."
                       className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-3 text-white font-sans text-sm focus:outline-none focus:border-cyan-400"
                     />
@@ -397,7 +424,7 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
                     <input
                       type="text"
                       value={titleNe}
-                      onChange={(e) => setTitleNe(e.target.value)}
+                      onChange={(e) => handleTitleNeChange(e.target.value)}
                       placeholder="नेपालीमा समाचार शीर्षक लेख्नुहोस्..."
                       className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-3 text-white font-sans text-sm focus:outline-none focus:border-cyan-400"
                     />
@@ -430,6 +457,38 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
                 <h4 className="font-bold text-white uppercase tracking-wider text-cyan-400 flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4" /> SEO & Search Engine Optimization
                 </h4>
+                <div>
+                  <label className="block text-slate-300 mb-1 flex items-center justify-between">
+                    <span>URL Slug (Auto-generated SEO friendly)</span>
+                    <span className="text-[10px] text-cyan-400 font-mono">/article/{slug || 'auto-slug'}</span>
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <span className="bg-slate-900 px-3 py-2.5 rounded-xl border border-cyan-500/20 text-slate-400 text-xs font-mono">/article/</span>
+                    <input
+                      type="text"
+                      value={slug}
+                      onChange={(e) => {
+                        setSlug(e.target.value);
+                        setIsManualSlug(true);
+                      }}
+                      placeholder="auto-generated-slug-from-title"
+                      className="flex-1 bg-slate-950 border border-cyan-500/30 rounded-xl p-2.5 text-cyan-300 font-mono text-xs focus:outline-none focus:border-cyan-400"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsManualSlug(false);
+                        setSlug(generateSlug(titleEn || titleNe || 'breaking-news'));
+                      }}
+                      className="px-3 py-2.5 bg-slate-900 border border-cyan-500/30 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 text-[11px] flex items-center gap-1 cursor-pointer"
+                      title="Auto-generate slug"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      <span>Auto</span>
+                    </button>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-slate-300 mb-1">Meta Title (Google Search)</label>

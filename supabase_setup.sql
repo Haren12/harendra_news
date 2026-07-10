@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS public.authors (
 CREATE TABLE IF NOT EXISTS public.articles (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     title TEXT NOT NULL,
+    slug TEXT,
     subtitle TEXT,
     content TEXT NOT NULL,
     category VARCHAR(100) NOT NULL,
