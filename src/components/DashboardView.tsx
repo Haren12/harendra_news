@@ -52,7 +52,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <Activity className="w-3.5 h-3.5 text-cyan-400 animate-pulse" /> ENTERPRISE CONTROL CENTER
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">CyberNews AI Editorial & System Hub</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Harendra News Editorial & System Hub</h1>
           <p className="text-slate-400 text-xs sm:text-sm font-mono mt-1">Super Admin Clearance • Supabase PostgreSQL RLS Active</p>
         </div>
 

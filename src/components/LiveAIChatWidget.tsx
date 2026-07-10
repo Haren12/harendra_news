@@ -21,8 +21,8 @@ export const LiveAIChatWidget: React.FC = () => {
     {
       id: '1',
       sender: 'ai',
-      senderName: 'CyberNews AI Anchor',
-      text: 'नमस्कार! Welcome to CyberNews AI Live Chat. Ask me anything about breaking tech dispatches, Nepal updates, or AI developments in English or नेपाली!',
+      senderName: 'Harendra News AI Anchor',
+      text: 'नमस्कार! Welcome to Harendra News Live Chat. Ask me anything about breaking tech dispatches, Nepal updates, or AI developments in English or नेपाली!',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
     {
@@ -35,7 +35,7 @@ export const LiveAIChatWidget: React.FC = () => {
     {
       id: '3',
       sender: 'ai',
-      senderName: 'CyberNews AI Anchor',
+      senderName: 'Harendra News AI Anchor',
       text: 'नेपालमा कृत्रिम बुद्धिमत्ता (AI) को क्षेत्रमा युवाहरूको आकर्षण तीव्र रूपमा बढिरहेको छ। IT, banking र tourism मा AI को प्रयोगले ठूलो अवसर सिर्जना गरेको छ!',
       timestamp: new Date(Date.now() - 30000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     }
@@ -91,7 +91,7 @@ export const LiveAIChatWidget: React.FC = () => {
       const aiMsg: ChatMessage = {
         id: `msg-${Date.now() + 1}`,
         sender: 'ai',
-        senderName: 'CyberNews AI Anchor',
+        senderName: 'Harendra News AI Anchor',
         text: data.reply || 'Thank you for your question. Our editorial desk is monitoring this closely.',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
@@ -101,7 +101,7 @@ export const LiveAIChatWidget: React.FC = () => {
       const errMsg: ChatMessage = {
         id: `msg-${Date.now() + 1}`,
         sender: 'ai',
-        senderName: 'CyberNews AI Anchor',
+        senderName: 'Harendra News AI Anchor',
         text: 'माफ गर्नुहोला, अहिले सर्भरमा थोरै समस्या देखियो। कृपया फेरि प्रयास गर्नुहोस्। (AI service is temporarily busy, please try again.)',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };

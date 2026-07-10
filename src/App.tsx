@@ -126,7 +126,7 @@ export default function App() {
 
       {/* Subtle Nepali Cultural & National Watermark */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 text-cyan-500/[0.03] select-none pointer-events-none text-[10vw] font-black uppercase tracking-widest z-0 text-center whitespace-nowrap">
-        नेपाल • CYBERNEWS AI
+        नेपाल • HARENDRA NEWS
       </div>
 
       {/* Navbar with Live Clock, Nepali Date, Language Selector & Admin Login */}
@@ -141,7 +141,7 @@ export default function App() {
         bookmarksCount={bookmarkedIds.length}
         currentView={currentView}
         onNavigateHome={() => setCurrentView('home')}
-        breakingNewsTitle={breakingNewsArticle?.title || 'Nexus CyberNews AI Online'}
+        breakingNewsTitle={breakingNewsArticle?.title || 'Nexus Harendra News Online'}
         currentLanguage={currentLanguage}
         onLanguageChange={setCurrentLanguage}
         currentUserRole={currentUserRole}

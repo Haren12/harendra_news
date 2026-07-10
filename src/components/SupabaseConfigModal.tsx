@@ -44,7 +44,7 @@ export const SupabaseConfigModal: React.FC<SupabaseConfigModalProps> = ({ onClos
             <div>
               <h4 className="font-bold text-white font-mono text-xs uppercase text-cyan-300 mb-1">Production-Ready Supabase Backend</h4>
               <p className="text-xs text-slate-300">
-                CyberNews AI is architected to connect directly with Supabase PostgreSQL, leveraging Row Level Security (RLS) policies, Realtime websockets, and Supabase Storage buckets.
+                Harendra News is architected to connect directly with Supabase PostgreSQL, leveraging Row Level Security (RLS) policies, Realtime websockets, and Supabase Storage buckets.
               </p>
             </div>
           </div>

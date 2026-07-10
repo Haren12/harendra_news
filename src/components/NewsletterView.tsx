@@ -10,7 +10,7 @@ interface Subscriber {
 
 export const NewsletterView: React.FC = () => {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([
-    { id: 'sub-1', email: 'commander.alex@cybernews.ai', status: 'Verified', subscribedAt: '2026-07-09' },
+    { id: 'sub-1', email: 'commander.alex@harendranews.com', status: 'Verified', subscribedAt: '2026-07-09' },
     { id: 'sub-2', email: 'sarah.connor@resistance.net', status: 'Verified', subscribedAt: '2026-07-08' },
     { id: 'sub-3', email: 'neo@matrix.org', status: 'Verified', subscribedAt: '2026-07-07' }
   ]);
@@ -58,7 +58,7 @@ export const NewsletterView: React.FC = () => {
               <label className="block text-slate-400 mb-2">Email Subject Line</label>
               <input
                 type="text"
-                placeholder="e.g., CyberNews AI Daily Brief: Quantum Breakthroughs..."
+                placeholder="e.g., Harendra News Daily Brief: Quantum Breakthroughs..."
                 value={broadcastSubject}
                 onChange={(e) => setBroadcastSubject(e.target.value)}
                 className="w-full bg-slate-900 border border-cyan-500/30 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-cyan-400"

@@ -71,7 +71,7 @@ app.post("/api/ai/write", async (req, res) => {
     }
 
     const ai = getGeminiClient();
-    const prompt = `You are a Chief Cyber-Technology Journalist at CyberNews AI. Write an elite, enterprise-grade news article about: "${topic}" in the category "${category}".
+    const prompt = `You are a Chief Technology Journalist at Harendra News. Write an elite, enterprise-grade news article about: "${topic}" in the category "${category}".
 Tone: ${tone || "Authoritative, futuristic, journalistic"}
 Length: ${length || "Comprehensive (approx 600-900 words)"}
 
@@ -170,7 +170,7 @@ app.post("/api/ai/chat", async (req, res) => {
     const { messages, userMessage } = req.body;
     const ai = getGeminiClient();
 
-    const systemInstruction = `You are "CyberNews AI Live Anchor" (साइबरन्युज एआई लाइभ एङ्कर), an intelligent, friendly, and expert news correspondent and discussion moderator on CyberNews AI & HarendraLamsal Media Cockpit. 
+    const systemInstruction = `You are "Harendra News AI Live Anchor" (हरेन्द्र न्युज एआई लाइभ एङ्कर), an intelligent, friendly, and expert news correspondent and discussion moderator on Harendra News & HarendraLamsal Media Cockpit. 
 You are chatting live with viewers who are tuning in to our news portal. 
 You can converse fluently in both English and Nepali (नेपाली). 
 Keep answers engaging, informative, journalistic, professional, and concise (under 3-4 sentences unless explaining deep tech/news topics). 
@@ -217,7 +217,7 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`CyberNews AI Enterprise Server running on http://localhost:${PORT}`);
+    console.log(`Harendra News Enterprise Server running on http://localhost:${PORT}`);
   });
 }
 
