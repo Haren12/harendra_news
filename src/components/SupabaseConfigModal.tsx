@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Database, X, ShieldCheck, CheckCircle2, Server, Lock, RefreshCw, AlertCircle, Check } from 'lucide-react';
 import { motion } from 'motion/react';
+import { testSupabaseConnection, isSupabaseConfigured } from '../lib/supabase';
 
 interface SupabaseConfigModalProps {
   onClose: () => void;
@@ -14,38 +15,9 @@ export const SupabaseConfigModal: React.FC<SupabaseConfigModalProps> = ({ onClos
     setIsTesting(true);
     setTestResult(null);
 
-    const startTime = performance.now();
-    try {
-      // Simulate or test backend connection ping
-      const res = await fetch('/api/health');
-      const data = await res.json();
-      const endTime = performance.now();
-      const latency = Math.round(endTime - startTime);
-
-      if (res.ok) {
-        setTestResult({
-          success: true,
-          message: 'Supabase PostgreSQL RLS & REST API operational. 24 tables active with secure JWT authentication.',
-          latency
-        });
-      } else {
-        setTestResult({
-          success: false,
-          message: 'Connected to local server, but Supabase environment keys need configuration in .env.'
-        });
-      }
-    } catch (err) {
-      // Fallback check for simulated client-side Supabase connection
-      const endTime = performance.now();
-      const latency = Math.round(endTime - startTime);
-      setTestResult({
-        success: true,
-        message: 'Supabase client initialized in offline-resilient mode with local fallback tables.',
-        latency
-      });
-    } finally {
-      setIsTesting(false);
-    }
+    const result = await testSupabaseConnection();
+    setTestResult(result);
+    setIsTesting(false);
   };
 
   return (
@@ -118,9 +90,9 @@ export const SupabaseConfigModal: React.FC<SupabaseConfigModalProps> = ({ onClos
                 ) : (
                   <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                 )}
-                <div className="space-y-1 flex-1">
+                <div className="space-y-2 flex-1">
                   <div className="font-bold flex items-center justify-between">
-                    <span>{testResult.success ? 'CONNECTION SUCCESSFUL' : 'NOTICE'}</span>
+                    <span>{testResult.success ? 'CONNECTION SUCCESSFUL' : 'SUPABASE SCHEMA NOTICE'}</span>
                     {testResult.latency !== undefined && (
                       <span className="text-[10px] bg-slate-900/80 px-2 py-0.5 rounded text-cyan-300 border border-cyan-500/20">
                         {testResult.latency} ms latency
@@ -128,6 +100,19 @@ export const SupabaseConfigModal: React.FC<SupabaseConfigModalProps> = ({ onClos
                     )}
                   </div>
                   <p className="text-slate-300 text-[11px] font-sans">{testResult.message}</p>
+                  
+                  {!testResult.success && testResult.message.includes('table') && (
+                    <div className="bg-slate-950/90 p-3 rounded-lg border border-amber-500/30 space-y-2 mt-2">
+                      <p className="text-amber-200 font-bold text-[11px]">
+                        नेपालीमा (Nepali): तपाईंको Supabase API कनेक्ट भयो तर `articles` टेबल छैन। यसलाई ठीक गर्न Supabase SQL Editor मा तलको कोड Run गर्नुहोस्:
+                      </p>
+                      <ol className="list-decimal list-inside text-slate-300 text-[11px] space-y-1">
+                        <li>Go to your <a href="https://supabase.com/dashboard" target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline font-bold">Supabase Dashboard</a>.</li>
+                        <li>Open your project (<b>bsmrksayrlmefvgoejtq</b>) &rarr; <b>SQL Editor</b>.</li>
+                        <li>Copy the contents of <code className="bg-slate-900 px-1 py-0.5 rounded text-cyan-300">supabase_setup.sql</code> from your project root and click <b>Run</b>.</li>
+                      </ol>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             )}

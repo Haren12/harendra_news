@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Shield, Lock, Mail, Github, Globe, CheckCircle2, AlertCircle } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 interface AdminLoginModalProps {
   onClose: () => void;
@@ -7,25 +8,48 @@ interface AdminLoginModalProps {
 }
 
 export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ onClose, onLoginSuccess }) => {
-  const [email, setEmail] = useState('admin@cybernews.ai');
-  const [password, setPassword] = useState('••••••••••••');
+  const [email, setEmail] = useState('harendralamsal4140@gmail.com');
+  const [password, setPassword] = useState('password123');
   const [selectedRole, setSelectedRole] = useState<'Administrator' | 'Chief Editor' | 'Editor' | 'Reporter'>('Administrator');
   const [isOtpMode, setIsOtpMode] = useState(false);
   const [otpCode, setOtpCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSuccessMsg(`Successfully authenticated as ${selectedRole}`);
+    setErrorMsg('');
+
+    try {
+      if (isSupabaseConfigured && !isOtpMode) {
+        // Attempt strict Supabase sign in
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) {
+          throw new Error(error.message || 'Invalid email or password. Please check your Supabase credentials.');
+        }
+      } else {
+        // Fallback check when offline or demo mode
+        if (!password || password.length < 6) {
+          throw new Error('Password must be at least 6 characters.');
+        }
+      }
+
+      setSuccessMsg(`Successfully authenticated as ${selectedRole} (${email})`);
       setTimeout(() => {
-        onLoginSuccess(selectedRole, email.split('@')[0] || 'Admin User');
+        onLoginSuccess(selectedRole, email.split('@')[0] || 'Harendra Lamsal');
         onClose();
       }, 1000);
-    }, 800);
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Authentication failed. Please verify credentials.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleOAuthLogin = (provider: string) => {
@@ -34,7 +58,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ onClose, onLog
       setLoading(false);
       setSuccessMsg(`Authenticated successfully via ${provider} OAuth`);
       setTimeout(() => {
-        onLoginSuccess('Administrator', `${provider} Administrator`);
+        onLoginSuccess('Administrator', 'Harendra Lamsal');
         onClose();
       }, 1000);
     }, 800);
@@ -71,6 +95,12 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ onClose, onLog
             </div>
           ) : (
             <>
+              {errorMsg && (
+                <div className="bg-rose-500/10 border border-rose-500/30 rounded-xl p-3 text-rose-300 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                  <span>{errorMsg}</span>
+                </div>
+              )}
               {/* Role Selector */}
               <div>
                 <label className="block text-xs text-slate-400 mb-1.5 uppercase tracking-wider">Select Access Role</label>
