@@ -1,0 +1,6 @@
+{
+  "name": "Harendralamsal",
+  "description": "Enterprise Grade News and Blog Platform with futuristic cyber interface, real-time analytics, AI writer, Supabase sync, and robust publishing workflows.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
