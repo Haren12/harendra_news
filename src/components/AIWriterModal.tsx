@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Article, Category, Author } from '../types';
-import { Sparkles, X, Send, Bot, ShieldCheck, CheckCircle2, RefreshCw } from 'lucide-react';
+import { Sparkles, X, Send, Bot, ShieldCheck, CheckCircle2, RefreshCw, Image as ImageIcon, Globe, FileText, Tag, Link as LinkIcon } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface AIWriterModalProps {
@@ -10,15 +10,52 @@ interface AIWriterModalProps {
 }
 
 export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublishArticle, authors }) => {
-  const [topic, setTopic] = useState('');
-  const [category, setCategory] = useState<Category>('Technology');
-  const [tone, setTone] = useState('Authoritative, futuristic, journalistic');
-  const [length, setLength] = useState('Comprehensive (approx 600-900 words)');
-  const [selectedAuthorId, setSelectedAuthorId] = useState(authors[0]?.id || 'auth-1');
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedPreview, setGeneratedPreview] = useState<any | null>(null);
+  const [activeTab, setActiveTab] = useState<'ai' | 'manual'>('ai');
 
-  const handleGenerate = async (e: React.FormEvent) => {
+  // AI Generation state
+  const [topic, setTopic] = useState('');
+  const [category, setCategory] = useState<Category>('Nepal News');
+  const [tone, setTone] = useState('Authoritative, journalistic, objective');
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  // Manual & Full Editorial Form state (English & Nepali dual inputs)
+  const [titleEn, setTitleEn] = useState('');
+  const [titleNe, setTitleNe] = useState('');
+  const [excerptEn, setExcerptEn] = useState('');
+  const [excerptNe, setExcerptNe] = useState('');
+  const [contentEn, setContentEn] = useState('');
+  const [contentNe, setContentNe] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<Category>('Nepal News');
+  const [selectedAuthorId, setSelectedAuthorId] = useState(authors[0]?.id || 'auth-1');
+  const [imageUrl, setImageUrl] = useState('https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&q=80&w=1200');
+  const [metaTitle, setMetaTitle] = useState('');
+  const [metaDescription, setMetaDescription] = useState('');
+  const [focusKeyword, setFocusKeyword] = useState('');
+  const [tagsStr, setTagsStr] = useState('Nepal, News, Harendralamsal');
+  const [readingTime, setReadingTime] = useState('5 min read');
+
+  const categoriesList: Category[] = [
+    'Nepal News',
+    'World News',
+    'Local News',
+    'Province News',
+    'Economy & Banking',
+    'Science & AI',
+    'Education',
+    'Tourism',
+    'Crime & Security',
+    'Agriculture',
+    'Technology',
+    'Politics',
+    'Business',
+    'Sports',
+    'Entertainment',
+    'Health',
+    'International',
+    'Opinion'
+  ];
+
+  const handleGenerateAI = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!topic.trim()) return;
 
@@ -27,11 +64,23 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
       const res = await fetch('/api/ai/write', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic, category, tone, length }),
+        body: JSON.stringify({ topic, category, tone, length: 'Comprehensive' }),
       });
       const data = await res.json();
       if (data.title && data.content) {
-        setGeneratedPreview(data);
+        setTitleEn(data.title);
+        setTitleNe(data.title + ' (नेपाली अनुवाद)');
+        setExcerptEn(data.subtitle || data.metaDescription || '');
+        setExcerptNe('नेपाल राष्ट्रिय डिजिटल इन्टेलिजेन्स मिडियाबाट प्रसारित समाचार सारांश।');
+        setContentEn(data.content);
+        setContentNe(data.content + '\n\n(Nepali translated intelligence brief)');
+        setMetaTitle(data.metaTitle || data.title);
+        setMetaDescription(data.metaDescription || '');
+        setFocusKeyword(topic.slice(0, 20));
+        if (data.tags) {
+          setTagsStr(data.tags.join(', '));
+        }
+        setActiveTab('manual'); // Switch to manual editor to review & publish
       } else {
         alert(data.error || 'Failed to generate article.');
       }
@@ -43,31 +92,54 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
     }
   };
 
-  const handleConfirmPublish = () => {
-    if (!generatedPreview) return;
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (reader.result) {
+          setImageUrl(reader.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleFinalPublish = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!titleEn.trim() && !titleNe.trim()) {
+      alert('Please provide at least an English or Nepali title.');
+      return;
+    }
+
     const author = authors.find(a => a.id === selectedAuthorId) || authors[0];
+    const finalTitle = titleEn.trim() ? titleEn : titleNe;
+    const finalContent = contentEn.trim() ? contentEn : contentNe;
+    const finalExcerpt = excerptEn.trim() ? excerptEn : excerptNe;
+    const tagsArray = tagsStr.split(',').map(t => t.trim()).filter(Boolean);
+
     const newArticle: Article = {
-      id: `art-ai-${Date.now()}`,
-      title: generatedPreview.title,
-      subtitle: generatedPreview.subtitle || 'Generated via Autonomous AI Journalist Studio.',
-      content: generatedPreview.content,
-      category: generatedPreview.category || category,
-      tags: generatedPreview.tags || ['AI Generated', 'CyberNews', topic],
+      id: `art-custom-${Date.now()}`,
+      title: finalTitle,
+      subtitle: finalExcerpt || 'Published via Harendralamsal Editorial Cockpit.',
+      content: finalContent,
+      category: selectedCategory,
+      tags: tagsArray.length > 0 ? tagsArray : ['Nepal News', 'Breaking'],
       author,
       publishedAt: 'Just now',
-      readTime: '4 min read',
-      views: 120,
-      likes: 12,
-      bookmarks: 5,
+      readTime: readingTime,
+      views: 145,
+      likes: 18,
+      bookmarks: 7,
       featured: false,
       breaking: true,
-      image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200',
-      aiSummary: generatedPreview.metaDescription || 'AI generated intelligence briefing.',
+      image: imageUrl,
+      aiSummary: metaDescription || finalExcerpt || 'Verified intelligence report.',
       sentiment: 'Tech-Optimistic',
       seo: {
-        metaTitle: generatedPreview.metaTitle || generatedPreview.title,
-        metaDescription: generatedPreview.metaDescription || '',
-        keywords: generatedPreview.tags || []
+        metaTitle: metaTitle || finalTitle,
+        metaDescription: metaDescription || finalExcerpt,
+        keywords: tagsArray
       },
       comments: []
     };
@@ -77,142 +149,349 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/90 backdrop-blur-2xl flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/90 backdrop-blur-2xl flex items-center justify-center p-2 sm:p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="w-full max-w-2xl bg-slate-950 border border-cyan-500/40 rounded-3xl shadow-2xl shadow-cyan-950/80 overflow-hidden"
+        className="w-full max-w-5xl bg-slate-950 border border-cyan-500/40 rounded-3xl shadow-2xl shadow-cyan-950/90 overflow-hidden font-mono text-xs flex flex-col max-h-[92vh]"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-cyan-950 via-slate-900 to-blue-950 border-b border-cyan-500/20 px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center">
-              <Bot className="w-4 h-4 text-cyan-400 animate-bounce" />
+        <div className="bg-gradient-to-r from-cyan-950 via-slate-900 to-blue-950 border-b border-cyan-500/20 px-6 py-4 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+              <Bot className="w-5 h-5 animate-pulse" />
             </div>
             <div>
-              <h3 className="font-bold text-white text-sm font-mono flex items-center gap-1.5">
-                AI STUDIO WRITER <span className="text-[10px] bg-cyan-500/20 text-cyan-400 px-1.5 py-0.5 rounded">Gemini 2.5 Flash</span>
+              <h3 className="font-bold text-white text-base flex items-center gap-2 font-mono">
+                EDITORIAL COCKPIT <span className="text-[10px] bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded border border-cyan-500/40">CEO Harendra Lamsal</span>
               </h3>
-              <p className="text-[10px] text-slate-400 font-mono">Autonomous News Generation Engine</p>
+              <p className="text-xs text-slate-400">Bilingual News & AI Story Creator (English / Nepali / SEO)</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 rounded-xl bg-slate-900 text-slate-400 hover:text-white border border-cyan-500/20">
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex bg-slate-900 border border-cyan-500/30 rounded-xl p-1">
+              <button
+                onClick={() => setActiveTab('ai')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === 'ai' ? 'bg-cyan-500 text-slate-950 shadow' : 'text-slate-300 hover:text-white'
+                }`}
+              >
+                AI Generator
+              </button>
+              <button
+                onClick={() => setActiveTab('manual')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === 'manual' ? 'bg-cyan-500 text-slate-950 shadow' : 'text-slate-300 hover:text-white'
+                }`}
+              >
+                Bilingual Editor
+              </button>
+            </div>
+            <button onClick={onClose} className="p-2 rounded-xl bg-slate-900 text-slate-400 hover:text-white border border-cyan-500/25 cursor-pointer">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
-        {/* Form or Preview */}
-        <div className="p-6 sm:p-8 space-y-6">
-          {!generatedPreview ? (
-            <form onSubmit={handleGenerate} className="space-y-4 font-mono text-xs">
-              <div>
-                <label className="block text-cyan-300 mb-2">Article Topic / Prompt *</label>
-                <textarea
-                  rows={3}
-                  value={topic}
-                  onChange={(e) => setTopic(e.target.value)}
-                  placeholder="e.g. Breakthrough in room-temperature superconductors using neural lattice doping..."
-                  required
-                  className="w-full bg-slate-900 border border-cyan-500/30 rounded-2xl p-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 font-sans"
-                />
+        {/* Body Container */}
+        <div className="p-6 overflow-y-auto space-y-6 flex-1">
+          {activeTab === 'ai' ? (
+            <div className="max-w-2xl mx-auto space-y-6 py-8">
+              <div className="text-center space-y-2">
+                <span className="text-[10px] bg-cyan-500/20 text-cyan-400 px-2.5 py-1 rounded-full uppercase tracking-wider border border-cyan-500/40 font-mono">
+                  Gemini 2.5 Flash Autonomous Intelligence
+                </span>
+                <h2 className="text-xl font-bold text-white font-sans">Generate News Article Instantly</h2>
+                <p className="text-xs text-slate-400">Enter a prompt or headline. The AI will synthesize verified facts, dual-language summaries, and SEO tags.</p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <form onSubmit={handleGenerateAI} className="space-y-4">
                 <div>
-                  <label className="block text-cyan-300 mb-2">Category</label>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value as Category)}
-                    className="w-full bg-slate-900 border border-cyan-500/30 rounded-xl p-3 text-white focus:outline-none focus:border-cyan-400"
-                  >
-                    {['Technology', 'Politics', 'Business', 'Sports', 'Entertainment', 'Health', 'International', 'Opinion'].map((cat) => (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                  </select>
+                  <label className="block text-cyan-300 mb-2 font-bold">Story Prompt / Subject *</label>
+                  <textarea
+                    rows={4}
+                    value={topic}
+                    onChange={(e) => setTopic(e.target.value)}
+                    placeholder="e.g. Kathmandu Valley expands electric autonomous transit network to reduce emissions by 50%..."
+                    required
+                    className="w-full bg-slate-900 border border-cyan-500/30 rounded-2xl p-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 font-sans"
+                  />
                 </div>
 
-                <div>
-                  <label className="block text-cyan-300 mb-2">Lead Author</label>
-                  <select
-                    value={selectedAuthorId}
-                    onChange={(e) => setSelectedAuthorId(e.target.value)}
-                    className="w-full bg-slate-900 border border-cyan-500/30 rounded-xl p-3 text-white focus:outline-none focus:border-cyan-400"
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-cyan-300 mb-2 font-bold">Category</label>
+                    <select
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value as Category)}
+                      className="w-full bg-slate-900 border border-cyan-500/30 rounded-xl p-3 text-white focus:outline-none focus:border-cyan-400"
+                    >
+                      {categoriesList.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-cyan-300 mb-2 font-bold">Journalistic Tone</label>
+                    <input
+                      type="text"
+                      value={tone}
+                      onChange={(e) => setTone(e.target.value)}
+                      className="w-full bg-slate-900 border border-cyan-500/30 rounded-xl p-3 text-white focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4 flex justify-center">
+                  <button
+                    type="submit"
+                    disabled={isGenerating}
+                    className="w-full sm:w-auto bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold px-8 py-3.5 rounded-2xl flex items-center justify-center gap-2 cursor-pointer shadow-xl shadow-cyan-500/30 disabled:opacity-50 text-sm"
                   >
-                    {authors.map((auth) => (
-                      <option key={auth.id} value={auth.id}>{auth.name} ({auth.role})</option>
-                    ))}
-                  </select>
+                    {isGenerating ? (
+                      <>
+                        <RefreshCw className="w-5 h-5 animate-spin" />
+                        <span>Synthesizing Bilingual Story via AI...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-5 h-5" />
+                        <span>Generate & Load into Editor</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          ) : (
+            <form onSubmit={handleFinalPublish} className="space-y-8">
+              {/* Top Row: Category, Author, Featured Image Upload */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 bg-slate-900/50 p-6 rounded-2xl border border-cyan-500/20">
+                <div className="space-y-4">
+                  <h4 className="font-bold text-white uppercase tracking-wider text-cyan-400 flex items-center gap-2">
+                    <FileText className="w-4 h-4" /> Story Configuration
+                  </h4>
+                  <div>
+                    <label className="block text-slate-300 mb-1">Category *</label>
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value as Category)}
+                      className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-2.5 text-white focus:outline-none focus:border-cyan-400"
+                    >
+                      {categoriesList.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-slate-300 mb-1">Author / CEO</label>
+                    <select
+                      value={selectedAuthorId}
+                      onChange={(e) => setSelectedAuthorId(e.target.value)}
+                      className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-2.5 text-white focus:outline-none focus:border-cyan-400"
+                    >
+                      {authors.map((auth) => (
+                        <option key={auth.id} value={auth.id}>{auth.name} ({auth.role})</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-slate-300 mb-1">Reading Time</label>
+                    <input
+                      type="text"
+                      value={readingTime}
+                      onChange={(e) => setReadingTime(e.target.value)}
+                      placeholder="e.g. 5 min read"
+                      className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-2.5 text-white focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                </div>
+
+                {/* Featured Image Upload / Preview */}
+                <div className="space-y-4 lg:col-span-2">
+                  <h4 className="font-bold text-white uppercase tracking-wider text-cyan-400 flex items-center gap-2">
+                    <ImageIcon className="w-4 h-4" /> Featured Image (Upload or URL)
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+                    <div className="sm:col-span-1 h-32 rounded-xl border border-cyan-500/30 overflow-hidden bg-slate-950 flex items-center justify-center relative">
+                      {imageUrl ? (
+                        <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      ) : (
+                        <span className="text-slate-500 text-[10px]">No Image</span>
+                      )}
+                    </div>
+                    <div className="sm:col-span-2 space-y-3">
+                      <div>
+                        <label className="block text-slate-300 mb-1 text-[11px]">Upload Image File (Max 5MB)</label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-cyan-500/20 file:text-cyan-300 hover:file:bg-cyan-500/30 cursor-pointer"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-300 mb-1 text-[11px]">Or Image URL</label>
+                        <input
+                          type="text"
+                          value={imageUrl}
+                          onChange={(e) => setImageUrl(e.target.value)}
+                          placeholder="https://images.unsplash.com/..."
+                          className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-2.5 text-white focus:outline-none focus:border-cyan-400"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-cyan-300 mb-2">Journalistic Tone</label>
-                <input
-                  type="text"
-                  value={tone}
-                  onChange={(e) => setTone(e.target.value)}
-                  className="w-full bg-slate-900 border border-cyan-500/30 rounded-xl p-3 text-white focus:outline-none focus:border-cyan-400"
-                />
+              {/* Dual Language Titles & Excerpts */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* English Section */}
+                <div className="space-y-4 bg-slate-900/40 p-5 rounded-2xl border border-cyan-500/20">
+                  <div className="flex items-center gap-2 text-cyan-400 font-bold border-b border-cyan-500/20 pb-2">
+                    <Globe className="w-4 h-4" /> <span>English Content</span>
+                  </div>
+                  <div>
+                    <label className="block text-slate-300 mb-1">Title (English) *</label>
+                    <input
+                      type="text"
+                      required
+                      value={titleEn}
+                      onChange={(e) => setTitleEn(e.target.value)}
+                      placeholder="Enter breaking news title in English..."
+                      className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-3 text-white font-sans text-sm focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-300 mb-1">Excerpt / Subtitle (English)</label>
+                    <textarea
+                      rows={2}
+                      value={excerptEn}
+                      onChange={(e) => setExcerptEn(e.target.value)}
+                      placeholder="Short summary in English..."
+                      className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-3 text-white font-sans text-xs focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-300 mb-1">Body Content (English - Markdown supported)</label>
+                    <textarea
+                      rows={6}
+                      value={contentEn}
+                      onChange={(e) => setContentEn(e.target.value)}
+                      placeholder="Write full article body in English..."
+                      className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-3 text-white font-sans text-xs focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                </div>
+
+                {/* Nepali Section */}
+                <div className="space-y-4 bg-slate-900/40 p-5 rounded-2xl border border-cyan-500/20">
+                  <div className="flex items-center gap-2 text-cyan-400 font-bold border-b border-cyan-500/20 pb-2">
+                    <Globe className="w-4 h-4" /> <span>नेपाली सामग्री (Nepali Content)</span>
+                  </div>
+                  <div>
+                    <label className="block text-slate-300 mb-1">शीर्षक (Title in Nepali) *</label>
+                    <input
+                      type="text"
+                      value={titleNe}
+                      onChange={(e) => setTitleNe(e.target.value)}
+                      placeholder="नेपालीमा समाचार शीर्षक लेख्नुहोस्..."
+                      className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-3 text-white font-sans text-sm focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-300 mb-1">सारांश (Excerpt in Nepali)</label>
+                    <textarea
+                      rows={2}
+                      value={excerptNe}
+                      onChange={(e) => setExcerptNe(e.target.value)}
+                      placeholder="नेपालीमा छोटो सारांश..."
+                      className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-3 text-white font-sans text-xs focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-300 mb-1">मुख्य लेख (Body Content in Nepali)</label>
+                    <textarea
+                      rows={6}
+                      value={contentNe}
+                      onChange={(e) => setContentNe(e.target.value)}
+                      placeholder="विस्तृत समाचार नेपालीमा लेख्नुहोस्..."
+                      className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-3 text-white font-sans text-xs focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                </div>
               </div>
 
-              <div className="pt-4 flex justify-end gap-3">
+              {/* SEO & Meta Planning */}
+              <div className="bg-slate-900/50 p-6 rounded-2xl border border-cyan-500/20 space-y-4">
+                <h4 className="font-bold text-white uppercase tracking-wider text-cyan-400 flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4" /> SEO & Search Engine Optimization
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-slate-300 mb-1">Meta Title (Google Search)</label>
+                    <input
+                      type="text"
+                      value={metaTitle}
+                      onChange={(e) => setMetaTitle(e.target.value)}
+                      placeholder="Best title for search engines (50-60 chars)"
+                      className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-2.5 text-white focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-300 mb-1">Focus Keyword</label>
+                    <input
+                      type="text"
+                      value={focusKeyword}
+                      onChange={(e) => setFocusKeyword(e.target.value)}
+                      placeholder="e.g. Nepal News, AI, Harendra Lamsal"
+                      className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-2.5 text-white focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-300 mb-1">Tags (Comma separated)</label>
+                    <input
+                      type="text"
+                      value={tagsStr}
+                      onChange={(e) => setTagsStr(e.target.value)}
+                      placeholder="Nepal, Breaking, Tech, Economy"
+                      className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-2.5 text-white focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-slate-300 mb-1">Meta Description (140-160 chars recommended)</label>
+                  <textarea
+                    rows={2}
+                    value={metaDescription}
+                    onChange={(e) => setMetaDescription(e.target.value)}
+                    placeholder="Short description for Google search results snippet..."
+                    className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-3 text-white font-sans text-xs focus:outline-none focus:border-cyan-400"
+                  />
+                </div>
+              </div>
+
+              {/* Submit Buttons */}
+              <div className="pt-4 flex justify-end gap-3 border-t border-cyan-500/20">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-5 py-3 rounded-xl bg-slate-900 text-slate-300 border border-cyan-500/20 hover:bg-slate-800 cursor-pointer"
+                  className="px-6 py-3 rounded-xl bg-slate-900 text-slate-300 border border-cyan-500/30 hover:bg-slate-800 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  disabled={isGenerating}
-                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold px-6 py-3 rounded-xl flex items-center gap-2 cursor-pointer shadow-lg shadow-cyan-500/30 disabled:opacity-50"
+                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold px-8 py-3 rounded-xl flex items-center gap-2 cursor-pointer shadow-lg shadow-cyan-500/30 text-sm"
                 >
-                  {isGenerating ? (
-                    <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
-                      <span>Synthesizing Article...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4" />
-                      <span>Generate AI Article</span>
-                    </>
-                  )}
+                  <CheckCircle2 className="w-5 h-5" />
+                  <span>Publish Story Live</span>
                 </button>
               </div>
             </form>
-          ) : (
-            <div className="space-y-6">
-              <div className="bg-cyan-950/40 border border-cyan-500/30 rounded-2xl p-4">
-                <span className="text-[10px] bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded font-mono uppercase">
-                  AI Generation Successful
-                </span>
-                <h4 className="text-lg font-bold text-white font-sans mt-2">{generatedPreview.title}</h4>
-                <p className="text-xs text-slate-300 font-sans mt-1">{generatedPreview.subtitle}</p>
-              </div>
-
-              <div className="max-h-60 overflow-y-auto bg-slate-900/60 p-4 rounded-xl border border-cyan-500/20 text-xs text-slate-300 font-sans space-y-2">
-                <p className="line-clamp-6">{generatedPreview.content}</p>
-              </div>
-
-              <div className="flex justify-end gap-3 pt-2 font-mono text-xs">
-                <button
-                  onClick={() => setGeneratedPreview(null)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-900 text-slate-300 border border-cyan-500/30 hover:bg-slate-800 cursor-pointer"
-                >
-                  Regenerate
-                </button>
-                <button
-                  onClick={handleConfirmPublish}
-                  className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-6 py-2.5 rounded-xl flex items-center gap-2 cursor-pointer shadow-lg shadow-cyan-500/20"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Publish to CyberNews Feed</span>
-                </button>
-              </div>
-            </div>
           )}
         </div>
       </motion.div>

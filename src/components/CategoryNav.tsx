@@ -11,7 +11,16 @@ import {
   ShieldAlert, 
   MessageSquareQuote, 
   Video, 
-  Image as ImageIcon 
+  Image as ImageIcon,
+  Flag,
+  MapPin,
+  Building,
+  GraduationCap,
+  Plane,
+  Shield,
+  Sprout,
+  DollarSign,
+  Compass
 } from 'lucide-react';
 import { Language, translations } from '../utils/translations';
 
@@ -23,7 +32,16 @@ interface CategoryNavProps {
 
 const categories: { name: Category; icon: React.ReactNode }[] = [
   { name: 'All', icon: <Globe className="w-4 h-4" /> },
-  { name: 'Technology', icon: <Cpu className="w-4 h-4" /> },
+  { name: 'Nepal News', icon: <Flag className="w-4 h-4" /> },
+  { name: 'World News', icon: <Compass className="w-4 h-4" /> },
+  { name: 'Local News', icon: <MapPin className="w-4 h-4" /> },
+  { name: 'Province News', icon: <Building className="w-4 h-4" /> },
+  { name: 'Economy & Banking', icon: <DollarSign className="w-4 h-4" /> },
+  { name: 'Science & AI', icon: <Cpu className="w-4 h-4" /> },
+  { name: 'Education', icon: <GraduationCap className="w-4 h-4" /> },
+  { name: 'Tourism', icon: <Plane className="w-4 h-4" /> },
+  { name: 'Crime & Security', icon: <Shield className="w-4 h-4" /> },
+  { name: 'Agriculture', icon: <Sprout className="w-4 h-4" /> },
   { name: 'Politics', icon: <Landmark className="w-4 h-4" /> },
   { name: 'Business', icon: <TrendingUp className="w-4 h-4" /> },
   { name: 'Sports', icon: <Trophy className="w-4 h-4" /> },
