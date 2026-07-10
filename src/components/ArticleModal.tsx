@@ -264,8 +264,8 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
           )}
 
           {/* Article Markdown / Content */}
-          <div className="prose prose-invert max-w-none font-sans text-slate-200 space-y-6 leading-relaxed text-base sm:text-lg">
-            {displayContent.split('\n\n').map((paragraph, idx) => {
+          <div className="prose prose-invert max-w-none font-sans text-slate-200 space-y-6 leading-relaxed text-base sm:text-lg whitespace-pre-line">
+            {(displayContent || article.subtitle || 'Content publishing in progress...').split('\n\n').map((paragraph, idx) => {
               if (paragraph.startsWith('### ')) {
                 return (
                   <h3 key={idx} className="text-xl sm:text-2xl font-bold text-cyan-300 font-sans mt-8 mb-4 border-l-4 border-cyan-400 pl-4">

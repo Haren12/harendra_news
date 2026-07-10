@@ -138,9 +138,15 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
     }
 
     const author = authors.find(a => a.id === selectedAuthorId) || authors[0];
-    const finalTitle = titleEn.trim() ? titleEn : titleNe;
-    const finalContent = contentEn.trim() ? contentEn : contentNe;
-    const finalExcerpt = excerptEn.trim() ? excerptEn : excerptNe;
+    const finalTitle = titleEn.trim() && titleNe.trim() 
+      ? (titleEn.length >= titleNe.length ? titleEn : titleNe)
+      : (titleEn.trim() ? titleEn : titleNe);
+    const finalContent = contentEn.trim() && contentNe.trim()
+      ? (contentEn.length >= contentNe.length ? contentEn : contentNe)
+      : (contentEn.trim() ? contentEn : contentNe);
+    const finalExcerpt = excerptEn.trim() && excerptNe.trim()
+      ? (excerptEn.length >= excerptNe.length ? excerptEn : excerptNe)
+      : (excerptEn.trim() ? excerptEn : excerptNe || finalContent.slice(0, 150) + '...');
     const tagsArray = tagsStr.split(',').map(t => t.trim()).filter(Boolean);
 
     const finalSlug = slug.trim() ? slug : generateSlug(finalTitle);
@@ -149,7 +155,7 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
       title: finalTitle,
       slug: finalSlug,
       subtitle: finalExcerpt || 'Published via Harendralamsal Editorial Cockpit.',
-      content: finalContent,
+      content: finalContent || finalTitle,
       category: selectedCategory,
       tags: tagsArray.length > 0 ? tagsArray : ['Nepal News', 'Breaking'],
       author,
