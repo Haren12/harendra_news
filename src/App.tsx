@@ -255,38 +255,7 @@ export default function App() {
       <main className="flex-1 relative z-10">
         {currentView === 'home' ? (
           <>
-            {/* Dynamic Edition Header Banner */}
-            <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
-              <div className="bg-gradient-to-r from-cyan-950/80 via-slate-900 to-blue-950/80 border border-cyan-500/30 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl shadow-cyan-950/40">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 font-bold text-lg font-mono shrink-0 shadow-lg shadow-cyan-500/10">
-                    {currentLanguage === 'ne' ? 'ने' : currentLanguage === 'hi' ? 'हि' : 'EN'}
-                  </div>
-                  <div>
-                    <h2 className="text-base sm:text-lg font-bold text-white font-sans flex items-center gap-2">
-                      {currentLanguage === 'ne' && '🇳🇵 नेपाली संस्करण (Nepali Sanskritan)'}
-                      {currentLanguage === 'en' && '🇬🇧 English Edition'}
-                      {currentLanguage === 'hi' && '🇮🇳 हिन्दी संस्करण (Hindi Edition)'}
-                      <span className="text-[10px] bg-cyan-500/20 text-cyan-300 px-2.5 py-0.5 rounded font-mono border border-cyan-500/40">
-                        Active Edition
-                      </span>
-                    </h2>
-                    <p className="text-xs text-slate-300 font-mono mt-0.5">
-                      {currentLanguage === 'ne' && 'नेपाल, गण्डकी, काठमाडौं तथा राष्ट्रिय ताजा समाचार प्रेषणहरू'}
-                      {currentLanguage === 'en' && 'Global Intelligence, Quantum Tech & International Dispatches'}
-                      {currentLanguage === 'hi' && 'प्रमुख समाचार और वैश्विक खुफिया रिपोर्ट'}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="text-xs font-mono text-cyan-400 bg-slate-950/90 px-3.5 py-2 rounded-xl border border-cyan-500/30 shadow-inner">
-                    {currentLanguage === 'ne' && '📡 भाषा मोड: नेपाली (Nepali Edition Active)'}
-                    {currentLanguage === 'en' && '📡 Language Mode: English Edition Active'}
-                    {currentLanguage === 'hi' && '📡 भाषा मोड: हिन्दी (Hindi Edition Active)'}
-                  </div>
-                </div>
-              </div>
-            </div>
+
 
             <HeroSlider 
               articles={articles} 

@@ -28,9 +28,9 @@ export const ArticleFeed: React.FC<ArticleFeedProps> = ({
   const t = translations[currentLanguage];
   const langFiltered = articles.filter(a => {
     if (currentLanguage === 'ne') {
-      return a.languageOption === 'ne' || a.languageOption === 'both' || a.category === 'Nepal News' || a.category === 'Local News' || a.category === 'Province News' || a.titleNe;
+      return Boolean(a.titleNe) || ['Nepal News', 'Local News', 'Province News', 'Education', 'Agriculture', 'Tourism', 'Economy & Banking'].includes(a.category);
     } else if (currentLanguage === 'en') {
-      return a.languageOption === 'en' || a.languageOption === 'both' || a.category === 'Technology' || a.category === 'World News' || a.category === 'Business' || a.category === 'Science & AI';
+      return !Boolean(a.titleNe) || ['Technology', 'World News', 'Business', 'Science & AI', 'International', 'Politics', 'Entertainment', 'Crime & Security'].includes(a.category);
     }
     return true;
   });

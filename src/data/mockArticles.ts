@@ -299,7 +299,9 @@ Using vapor-grown carbon nanotube ribbons with a tensile strength exceeding 120 
   {
     id: 'art-9',
     title: 'Nepal National Digital Infrastructure Mesh Expands to 753 Local Municipalities',
+    titleNe: 'नेपाल राष्ट्रिय डिजिटल पूर्वाधार मेस ७५३ वटा स्थानीय पालिकामा विस्तार',
     subtitle: 'Led by CEO Harendra Lamsal, the nationwide fiber and autonomous intelligence rollout connects remote mountain schools and health posts to high-speed quantum cloud.',
+    subtitleNe: 'प्रधान सम्पादक नरेन्द्र लम्सालको नेतृत्वमा राष्ट्रिय फाइबर तथा स्वायत्त इन्टेलिजेन्स रोलआउटले दुर्गम हिमालका विद्यालय र स्वास्थ्य चौकीलाई जोडेको छ।',
     content: `Nepal’s digital transformation has reached a monumental milestone as the National Digital Intelligence Mesh successfully completes fiber and satellite terminal integration across all 753 local government headquarters.
 
 ### Empowering Rural Communities
@@ -358,7 +360,9 @@ The pact establishes automated cryogenic monitoring arrays across Annapurna, Eve
   {
     id: 'art-11',
     title: 'Kathmandu Metropolitan City Launches Smart Traffic & Autonomous Transit Grid',
+    titleNe: 'काठमाडौं महानगरपालिकाद्वारा स्मार्ट ट्राफिक तथा स्वायत्त पारवहन ग्रिडको शुभारम्भ',
     subtitle: 'AI-controlled adaptive traffic signals reduce inner-city congestion by 45% while electric micro-buses integrate with real-time commuter apps.',
+    subtitleNe: 'एआई-नियन्त्रित अनुकूली ट्राफिक संकेतहरूले भित्री सहरको भिडभाड ४५% ले घटाएका छन् भने विद्युतीय माइक्रोबसहरू एपसँग जोडिएका छन्।',
     content: `Commuters navigating Kathmandu’s bustling arteries are experiencing immediate relief following the launch of the Metropolitan Smart Transit Grid. 
 
 ### AI Signal Optimization
@@ -386,7 +390,9 @@ Powered by localized neural networks, traffic lights dynamically adjust timing b
   {
     id: 'art-12',
     title: 'Gandaki Province Announces High-Tech Agricultural Drone Subsidy for Farmers',
+    titleNe: 'गण्डकी प्रदेशद्वारा किसानहरूका लागि हाइटेक कृषि ड्रोन अनुदानको घोषणा',
     subtitle: 'Over 5,000 agrarian cooperatives receive automated crop-spraying and soil-analysis drones to boost organic cardamom and tea yields.',
+    subtitleNe: '५,००० भन्दा बढी कृषि सहकारीहरूले अर्गानिक अलैंची र चिया उत्पादन बढाउन स्वचालित बाली-छर्कने र माटो-विश्लेषण ड्रोन प्राप्त गरेका छन्।',
     content: `Agriculture modernization in provincial Nepal took a giant leap forward today as Gandaki Province unveiled its agrarian autonomy initiative.
 
 ### Precision Farming
@@ -414,7 +420,9 @@ Farmers equipped with AI-guided drones can now pinpoint irrigation needs and nut
   {
     id: 'art-13',
     title: 'Nepal Central Bank Introduces Interoperable Sovereign Digital Rupee Gateway',
+    titleNe: 'नेपाल राष्ट्र बैंकद्वारा अन्तरसञ्चालनयोग्य सार्वभौम डिजिटल मुद्रा गेटवेको सुरुआत',
     subtitle: 'Instant cross-border remittances and merchant settlements go live with zero intermediary transaction fees.',
+    subtitleNe: 'शून्य मध्यस्थ कारोबार शुल्कसहित तत्काल सीमापार रेमिट्यान्स र व्यापारी भुक्तानीहरू लाइभ भएका छन्।',
     content: `The financial sector in South Asia is witnessing a paradigm shift as Nepal Rastra Bank rolls out the sovereign digital currency gateway. 
 
 ### Instant Remittance Settler
@@ -442,7 +450,9 @@ Expatriate workers sending remittances from overseas can now transfer funds inst
   {
     id: 'art-14',
     title: 'Tribhuvan University Deploys Autonomous AI Tutors Across All Constituent Campuses',
+    titleNe: 'त्रिभुवन विश्वविद्यालयद्वारा सबै आंगिक क्याम्पसहरूमा स्वायत्त एआई ट्युटरहरूको जडान',
     subtitle: 'Personalized quantum LLM tutors provide multilingual academic coaching in Nepali, Newari, Maithili, and English.',
+    subtitleNe: 'व्यक्तिगत क्वान्टम एलएलएम ट्युटरहरूले नेपाली, नेवारी, मैथिली र अंग्रेजीमा बहुभाषी शैक्षिक कोचिङ प्रदान गर्छन्।',
     content: `Higher education in Nepal is embracing autonomous cognitive tooling. Tribhuvan University has officially activated localized LLM tutoring modules across its 60+ constituent campuses.`,
     category: 'Education',
     tags: ['Education', 'AI Tutors', 'University', 'EdTech'],
