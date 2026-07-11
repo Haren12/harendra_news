@@ -1,9 +1,20 @@
 @import "tailwindcss";
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
   body {
     top: 0 !important;
+    overflow-x: hidden;
   }
+}
+
+/* Performance optimizations for smooth scrolling and animations */
+* {
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Google Translate Widget Dark Theme Overrides */

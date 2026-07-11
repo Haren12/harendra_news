@@ -1,11 +1,12 @@
 import { Article, Author, SystemLog } from '../types';
+import harendraAvatar from '../assets/harendra_avatar.jpg';
 
 export const mockAuthors: Author[] = [
   {
     id: 'auth-1',
     name: 'Harendra Lamsal',
     role: 'CEO & Founder, Chief Editor',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300',
+    avatar: harendraAvatar,
     bio: 'Founder, CEO and Lead Architect. Passionate about cutting-edge technology, AI intelligence, and sovereign digital infrastructures.',
     articlesCount: 156
   },

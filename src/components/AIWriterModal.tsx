@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Article, Category, Author } from '../types';
+import { Language } from '../utils/translations';
 import { Sparkles, X, Send, Bot, ShieldCheck, CheckCircle2, RefreshCw, Image as ImageIcon, Globe, FileText, Tag, Link as LinkIcon } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -9,9 +10,10 @@ interface AIWriterModalProps {
   onUpdateArticle?: (article: Article) => void;
   authors: Author[];
   articleToEdit?: Article | null;
+  currentLanguage?: Language;
 }
 
-export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublishArticle, onUpdateArticle, authors, articleToEdit }) => {
+export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublishArticle, onUpdateArticle, authors, articleToEdit, currentLanguage }) => {
   const [activeTab, setActiveTab] = useState<'ai' | 'manual'>(articleToEdit ? 'manual' : 'ai');
 
   // AI Generation state
@@ -60,7 +62,12 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
   const [focusKeyword, setFocusKeyword] = useState(articleToEdit?.seo?.keywords?.[0] || '');
   const [tagsStr, setTagsStr] = useState(articleToEdit?.tags?.join(', ') || 'Nepal, News, Harendralamsal');
   const [readingTime, setReadingTime] = useState(articleToEdit?.readTime || '5 min read');
-  const [languageOption, setLanguageOption] = useState<'en' | 'ne' | 'both'>(articleToEdit?.languageOption || 'both');
+  const [languageOption, setLanguageOption] = useState<'en' | 'ne' | 'both'>(() => {
+    if (articleToEdit?.languageOption) return articleToEdit.languageOption;
+    if (currentLanguage === 'en') return 'en';
+    if (currentLanguage === 'ne') return 'ne';
+    return 'both';
+  });
 
   const categoriesList: Category[] = [
     'Nepal News',
@@ -92,16 +99,16 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
       const res = await fetch('/api/ai/write', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic, category, tone, length: 'Comprehensive' }),
+        body: JSON.stringify({ topic, category, tone, length: 'Comprehensive', languageOption }),
       });
       const data = await res.json();
-      if (data.title && data.content) {
-        setTitleEn(data.title);
-        setTitleNe(data.title + ' (नेपाली अनुवाद)');
+      if (data.title || data.titleNe || data.content) {
+        setTitleEn(data.title || data.titleNe || '');
+        setTitleNe(data.titleNe || data.title || '');
         setExcerptEn(data.subtitle || data.metaDescription || '');
-        setExcerptNe('नेपाल राष्ट्रिय डिजिटल इन्टेलिजेन्स मिडियाबाट प्रसारित समाचार सारांश।');
-        setContentEn(data.content);
-        setContentNe(data.content + '\n\n(Nepali translated intelligence brief)');
+        setExcerptNe(data.subtitleNe || 'नेपाल राष्ट्रिय डिजिटल इन्टेलिजेन्स मिडियाबाट प्रसारित समाचार सारांश।');
+        setContentEn(data.content || data.contentNe || '');
+        setContentNe(data.contentNe || data.content || '');
         setMetaTitle(data.metaTitle || data.title);
         setMetaDescription(data.metaDescription || '');
         setFocusKeyword(topic.slice(0, 20));
@@ -300,7 +307,7 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-cyan-300 mb-2 font-bold">Category</label>
                     <select
@@ -322,6 +329,21 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
                       onChange={(e) => setTone(e.target.value)}
                       className="w-full bg-slate-900 border border-cyan-500/30 rounded-xl p-3 text-white focus:outline-none focus:border-cyan-400"
                     />
+                  </div>
+
+                  <div>
+                    <label className="block text-cyan-300 mb-2 font-bold flex items-center gap-1">
+                      <Globe className="w-4 h-4 text-cyan-400" /> भाषा / Language
+                    </label>
+                    <select
+                      value={languageOption}
+                      onChange={(e) => setLanguageOption(e.target.value as 'en' | 'ne' | 'both')}
+                      className="w-full bg-slate-900 border border-cyan-500/30 rounded-xl p-3 text-white focus:outline-none focus:border-cyan-400 font-medium"
+                    >
+                      <option value="en">English</option>
+                      <option value="ne">नेपाली (Nepali)</option>
+                      <option value="both">Both / दुवै भाषा</option>
+                    </select>
                   </div>
                 </div>
 
@@ -376,6 +398,21 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
                       {authors.map((auth) => (
                         <option key={auth.id} value={auth.id}>{auth.name} ({auth.role})</option>
                       ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-300 mb-1 font-bold flex items-center gap-1.5">
+                      <Globe className="w-4 h-4 text-cyan-400" /> भाषा / Language *
+                    </label>
+                    <select
+                      value={languageOption}
+                      onChange={(e) => setLanguageOption(e.target.value as 'en' | 'ne' | 'both')}
+                      className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-2.5 text-white focus:outline-none focus:border-cyan-400 font-medium"
+                    >
+                      <option value="en">English</option>
+                      <option value="ne">नेपाली (Nepali)</option>
+                      <option value="both">Both / दुवै भाषा (Bilingual)</option>
                     </select>
                   </div>
 

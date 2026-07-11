@@ -20,6 +20,7 @@ import { GoogleTranslateWidget } from './components/GoogleTranslateWidget';
 import { NepaliUnicodeHelper } from './components/NepaliUnicodeHelper';
 import { Language } from './utils/translations';
 import { supabase, isSupabaseConfigured } from './lib/supabase';
+import harendraAvatar from './assets/harendra_avatar.jpg';
 
 const getValidTimestamp = (val?: string) => {
   if (!val || val.includes('ago') || val === 'Just now' || val === 'भर्खरै') {
@@ -60,7 +61,7 @@ export default function App() {
                 content: d.content,
                 category: d.category,
                 tags: d.tags || [],
-                author: { name: 'Harendra Lamsal', title: 'Editor-in-Chief', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
+                author: { name: 'Harendra Lamsal', title: 'Editor-in-Chief', avatar: harendraAvatar },
                 publishedAt: d.published_at || new Date().toISOString(),
                 readTime: d.read_time || '5 min read',
                 views: d.views || 0,
@@ -239,8 +240,8 @@ export default function App() {
     const newComment = {
       id: `c-${Date.now()}`,
       articleId,
-      authorName: currentUserName || 'Commander Alex',
-      authorAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100',
+      authorName: currentUserName || 'Harendra Lamsal',
+      authorAvatar: currentUserRole ? harendraAvatar : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100',
       content,
       createdAt: 'Just now',
       likes: 1
@@ -445,6 +446,7 @@ export default function App() {
           onUpdateArticle={handleUpdateArticle}
           authors={authors}
           articleToEdit={editingArticle}
+          currentLanguage={currentLanguage}
         />
       )}
 

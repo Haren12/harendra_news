@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Article, Comment } from '../types';
+import harendraAvatar from '../assets/harendra_avatar.jpg';
 import { 
   X, 
   Clock, 
@@ -48,8 +49,8 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
   const [isTranslating, setIsTranslating] = useState(false);
   const [commentInput, setCommentInput] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
-  const [readerLang, setReaderLang] = useState<'en' | 'ne'>(
-    article.titleNe || article.languageOption === 'ne' ? 'ne' : 'en'
+  const [readerLang, setReaderLang] = useState<'en' | 'ne' | 'both'>(
+    article.languageOption || 'en'
   );
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
@@ -127,7 +128,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
   const authorObj = article.author || {
     name: 'Harendra Lamsal',
     role: 'Chief Editor & Publisher',
-    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100'
+    avatar: harendraAvatar
   };
 
   return (
@@ -217,18 +218,6 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
         {/* Article Header & Hero Image */}
         <div className="p-6 sm:p-10 lg:p-12 space-y-8">
           <div>
-            <div className="flex flex-wrap items-center gap-3 mb-4">
-              <span className="bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-wider">
-                {article.category}
-              </span>
-              <span className="text-xs text-cyan-400 font-mono flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5" /> {article.readTime || '3 min read'}
-              </span>
-              <span className="text-xs text-slate-400 font-mono flex items-center gap-1">
-                <Eye className="w-3.5 h-3.5" /> {(article.views || 145).toLocaleString()} views
-              </span>
-            </div>
-
             {/* Language Switcher for Readers */}
             <div className="flex flex-wrap items-center gap-2 bg-slate-900/90 p-2.5 rounded-2xl border border-cyan-500/30 mb-6 font-mono text-xs w-fit">
               <span className="text-cyan-400 px-2 flex items-center gap-1.5 font-bold">
@@ -258,6 +247,18 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
               >
                 Both / दुवै भाषा
               </button>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3 mb-4">
+              <span className="bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-wider">
+                {article.category}
+              </span>
+              <span className="text-xs text-cyan-400 font-mono flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5" /> {article.readTime || '3 min read'}
+              </span>
+              <span className="text-xs text-slate-400 font-mono flex items-center gap-1">
+                <Eye className="w-3.5 h-3.5" /> {(article.views || 145).toLocaleString()} views
+              </span>
             </div>
 
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight font-sans mb-4">

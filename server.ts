@@ -143,7 +143,7 @@ Return ONLY valid JSON with keys: "summary", "tags" (array of strings), "reading
 // AI Article Writer Studio
 app.post("/api/ai/write", async (req, res) => {
   try {
-    const { topic, category, tone, length } = req.body;
+    const { topic, category, tone, length, languageOption } = req.body;
     if (!topic) {
       return res.status(400).json({ error: "Topic is required." });
     }
@@ -151,12 +151,18 @@ app.post("/api/ai/write", async (req, res) => {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       const fallbackTitle = topic.charAt(0).toUpperCase() + topic.slice(1) + ": Breakthrough Dispatches in Nepal & Global Markets";
+      const fallbackTitleNe = `${topic} सम्बन्धित विशेष सम्पादकीय रिपोर्ट`;
       const fallbackSubtitle = `A comprehensive editorial analysis on ${topic}, covering technological impact, economic shifts, and sovereign security protocols.`;
+      const fallbackSubtitleNe = `नेपाल राष्ट्रिय डिजिटल इन्टेलिजेन्स मिडियाबाट प्रसारित समाचार सारांश।`;
       const fallbackContent = `The rapid acceleration of ${topic} is transforming industrial landscapes across Nepal and international markets.\n\n### Strategic Overview\nAs organizations and government bodies integrate advanced digital architectures, ${topic} stands at the forefront of innovation. Experts emphasize that proactive adoption and robust security frameworks are essential for sustainable growth.\n\n### Key Takeaways\n- Accelerated deployment across municipal and federal nodes.\n- Enhanced efficiency and real-time telemetry auditing.\n- Continued collaboration between technical researchers and policymakers.`;
+      const fallbackContentNe = `नेपाल र अन्तर्राष्ट्रिय बजारमा ${topic} को द्रुत विकासले औद्योगिक पूर्वाधारलाई रूपान्तरण गर्दैछ।\n\n### मुख्य विशेषताहरू\n- संघीय र स्थानीय स्तरमा प्रविधि विस्तार।\n- सुरक्षित डाटा व्यवस्थापन र डिजिटल अर्थतन्त्र।\n- नीति निर्माता र अनुसन्धानकर्ताहरूबीच सहकार्य।`;
       return res.json({
         title: fallbackTitle,
+        titleNe: fallbackTitleNe,
         subtitle: fallbackSubtitle,
+        subtitleNe: fallbackSubtitleNe,
         content: fallbackContent,
+        contentNe: fallbackContentNe,
         metaTitle: fallbackTitle.substring(0, 60),
         metaDescription: fallbackSubtitle.substring(0, 160),
         tags: [topic, category || 'Technology', 'Nepal News', 'Innovation'],
@@ -165,18 +171,27 @@ app.post("/api/ai/write", async (req, res) => {
     }
 
     const ai = getGeminiClient();
+    const langInstruction = 
+      languageOption === 'ne' 
+        ? "Write both title, subtitle, and content in fluent Nepali language (नेपाली भाषा)." 
+        : languageOption === 'both' 
+          ? "Provide both English (title, subtitle, content) AND Nepali translation equivalents (titleNe, subtitleNe, contentNe)." 
+          : "Write in English.";
+
     const prompt = `You are a Chief Technology Journalist at Harendra News. Write an elite, enterprise-grade news article about: "${topic}" in the category "${category}".
 Tone: ${tone || "Authoritative, futuristic, journalistic"}
 Length: ${length || "Comprehensive (approx 600-900 words)"}
+Language Instruction: ${langInstruction}
 
 Include:
 - A catchy, hard-hitting cyber/tech headline.
 - An engaging subtitle.
 - Markdown formatted body with bold highlights, subheadings, and key takeaways.
+- If language is 'both', provide English fields (title, subtitle, content) AND Nepali fields (titleNe, subtitleNe, contentNe). If language is 'ne', put Nepali in title/content and titleNe/contentNe.
 - SEO meta title and meta description.
 
 Return ONLY valid JSON with keys:
-"title", "subtitle", "content" (markdown), "metaTitle", "metaDescription", "tags" (array of strings), "category".`;
+"title", "titleNe", "subtitle", "subtitleNe", "content" (markdown), "contentNe", "metaTitle", "metaDescription", "tags" (array of strings), "category".`;
 
     const response = await ai.models.generateContent({
       model: "gemini-3.5-flash",
@@ -190,8 +205,11 @@ Return ONLY valid JSON with keys:
     const parsed = parseJsonSafely(resultText);
     res.json({
       title: parsed.title || `${topic}: Comprehensive Report`,
+      titleNe: parsed.titleNe || parsed.title || `${topic} विशेष रिपोर्ट`,
       subtitle: parsed.subtitle || `Detailed analysis on ${topic}.`,
+      subtitleNe: parsed.subtitleNe || `यस विषयमा विस्तृत सम्पादकीय विश्लेषण।`,
       content: parsed.content || `### Overview\nRecent developments in ${topic} demonstrate significant potential across digital ecosystems.`,
+      contentNe: parsed.contentNe || parsed.content || `### सिंहावलोकन\n${topic} क्षेत्रमा भएको नवीनतम विकासले डिजिटल इकोसिस्टममा नयाँ सम्भावनाहरू सिर्जना गरेको छ।`,
       metaTitle: parsed.metaTitle || parsed.title || topic,
       metaDescription: parsed.metaDescription || parsed.subtitle || topic,
       tags: Array.isArray(parsed.tags) ? parsed.tags : [topic, category || 'Technology'],
