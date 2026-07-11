@@ -42,56 +42,32 @@ export default function App() {
       if (isSupabaseConfigured) {
         try {
           const { data, error } = await supabase.from('articles').select('*').order('published_at', { ascending: false });
-          if (!error && data) {
-            if (data.length === 0) {
-              // Seed mock articles into Supabase if empty
-              for (const art of mockArticles) {
-                await supabase.from('articles').upsert({
-                  id: art.id,
-                  title: art.title,
-                  slug: art.slug || art.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-                  subtitle: art.subtitle,
-                  content: art.content,
-                  category: art.category,
-                  tags: art.tags || [],
-                  read_time: art.readTime || '5 min read',
-                  views: art.views || 0,
-                  likes: art.likes || 0,
-                  bookmarks: art.bookmarks || 0,
-                  featured: art.featured || false,
-                  breaking: art.breaking || false,
-                  image: art.image,
-                  ai_summary: art.aiSummary,
-                  sentiment: art.sentiment || 'Objective',
-                  published_at: art.publishedAt || new Date().toISOString()
-                }, { onConflict: 'id' });
-              }
-              setArticles(mockArticles);
-              return;
-            } else {
-              const mapped = data.map((d: any) => ({
-                id: d.id,
-                title: d.title,
-                slug: d.slug,
-                subtitle: d.subtitle,
-                content: d.content,
-                category: d.category,
-                tags: d.tags || [],
-                author: { name: 'Harendra Lamsal', title: 'Editor-in-Chief', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
-                publishedAt: d.published_at,
-                readTime: d.read_time || '5 min read',
-                views: d.views || 0,
-                likes: d.likes || 0,
-                bookmarks: d.bookmarks || 0,
-                featured: d.featured || false,
-                breaking: d.breaking || false,
-                image: d.image || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800',
-                aiSummary: d.ai_summary,
-                sentiment: d.sentiment || 'Objective'
-              }));
-              setArticles(mapped);
-              return;
-            }
+          if (!error && data && data.length > 0) {
+            const mapped = data.map((d: any) => ({
+              id: d.id,
+              title: d.title,
+              slug: d.slug || d.title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || '',
+              subtitle: d.subtitle || '',
+              content: d.content,
+              category: d.category,
+              tags: d.tags || [],
+              author: { name: 'Harendra Lamsal', title: 'Editor-in-Chief', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
+              publishedAt: d.published_at || new Date().toISOString(),
+              readTime: d.read_time || '5 min read',
+              views: d.views || 0,
+              likes: d.likes || 0,
+              bookmarks: d.bookmarks || 0,
+              featured: d.featured || false,
+              breaking: d.breaking || false,
+              image: d.image || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800',
+              aiSummary: d.ai_summary || '',
+              sentiment: d.sentiment || 'Objective'
+            }));
+            setArticles(mapped);
+            return;
+          }
+          if (error) {
+            console.warn('Supabase query error (falling back to local/backend):', error.message || error);
           }
         } catch (e) {
           console.error('Supabase fetch failed, falling back', e);
@@ -128,20 +104,9 @@ export default function App() {
             await supabase.from('articles').upsert({
               id: art.id,
               title: art.title,
-              slug: art.slug || art.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-              subtitle: art.subtitle,
               content: art.content,
               category: art.category,
-              tags: art.tags || [],
-              read_time: art.readTime || '5 min read',
-              views: art.views || 0,
-              likes: art.likes || 0,
-              bookmarks: art.bookmarks || 0,
-              featured: art.featured || false,
-              breaking: art.breaking || false,
               image: art.image,
-              ai_summary: art.aiSummary,
-              sentiment: art.sentiment || 'Objective',
               published_at: art.publishedAt || new Date().toISOString()
             }, { onConflict: 'id' });
           } catch (supErr) {
