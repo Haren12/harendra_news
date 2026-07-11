@@ -113,7 +113,7 @@ Article Content: ${content}
 Return ONLY valid JSON with keys: "summary", "tags" (array of strings), "readingTime" (number), "sentiment".`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-flash-latest",
+      model: "gemini-3.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -179,7 +179,7 @@ Return ONLY valid JSON with keys:
 "title", "subtitle", "content" (markdown), "metaTitle", "metaDescription", "tags" (array of strings), "category".`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-flash-latest",
+      model: "gemini-3.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -233,7 +233,7 @@ Content: ${content}
 Return ONLY valid JSON with keys: "translatedTitle", "translatedContent".`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-flash-latest",
+      model: "gemini-3.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -271,7 +271,7 @@ Return ONLY valid JSON with keys:
 "jsonLd" (stringified JSON-LD schema object).`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-flash-latest",
+      model: "gemini-3.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -325,7 +325,7 @@ If a user writes in Nepali, reply warmly in Nepali. If in English, reply in Engl
     }));
 
     const chat = ai.chats.create({
-      model: "gemini-flash-latest",
+      model: "gemini-3.5-flash",
       config: {
         systemInstruction,
       },
