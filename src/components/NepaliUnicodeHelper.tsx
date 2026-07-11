@@ -22,23 +22,15 @@ export const NepaliUnicodeHelper: React.FC = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed bottom-6 right-6 z-40 font-mono text-xs">
-      {!isOpen ? (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 font-bold transition-all cursor-pointer border border-cyan-300"
-          title="नेपाली युनिकोड टाइपिंग (Nepali Unicode Typing)"
-        >
-          <Languages className="w-5 h-5" />
-          <span>नेपाली Unicode</span>
-        </button>
-      ) : (
-        <div className="bg-slate-950 border border-cyan-500/50 rounded-3xl shadow-2xl p-4 w-80 sm:w-96 text-white space-y-4">
+    <div className="fixed bottom-6 left-6 z-40 font-mono text-xs">
+      <div className="bg-slate-950 border border-cyan-500/50 rounded-3xl shadow-2xl p-4 w-80 sm:w-96 text-white space-y-4">
           <div className="flex items-center justify-between border-b border-cyan-500/20 pb-2">
             <div className="flex items-center gap-2 text-cyan-400 font-bold">
               <Sparkles className="w-4 h-4" />
-              <span>Nepali Unicode Converter</span>
+              <span>Unicode Converter</span>
             </div>
             <button
               onClick={() => setIsOpen(false)}
@@ -82,7 +74,6 @@ export const NepaliUnicodeHelper: React.FC = () => {
             Type 'nepal', 'kathmandu', 'samachar', 'namaste', etc.
           </div>
         </div>
-      )}
     </div>
   );
 };

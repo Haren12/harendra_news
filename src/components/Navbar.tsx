@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { getLiveDateAndTime, FormattedDateInfo } from '../utils/dateUtils';
 import { Language, translations } from '../utils/translations';
+import { GoogleTranslateWidget } from './GoogleTranslateWidget';
 
 interface NavbarProps {
   onOpenSearch: () => void;
@@ -94,14 +95,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Language Switcher & Security Status */}
         <div className="flex items-center gap-3 flex-wrap">
-          {/* Nepali Unicode Tool Button */}
+          {/* Unicode Tool Button */}
           <button
             onClick={() => window.dispatchEvent(new CustomEvent('open-unicode-helper'))}
             className="flex items-center gap-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer shadow-sm"
-            title="Nepali Unicode Typing Assistant"
+            title="Unicode Typing Assistant"
           >
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-            <span>नेपाली Unicode</span>
+            <span>Unicode</span>
           </button>
 
           {/* Language Switcher Buttons */}

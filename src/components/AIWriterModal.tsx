@@ -363,18 +363,7 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
                       ))}
                     </select>
                   </div>
-                  <div>
-                    <label className="block text-slate-300 mb-1">Publication Language Mode *</label>
-                    <select
-                      value={languageOption}
-                      onChange={(e) => setLanguageOption(e.target.value as 'en' | 'ne' | 'both')}
-                      className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-2.5 text-white focus:outline-none focus:border-cyan-400 font-sans"
-                    >
-                      <option value="both">Both English & Nepali (Bilingual / दुवै)</option>
-                      <option value="en">English Only (अंग्रेजी)</option>
-                      <option value="ne">Nepali Only (नेपाली)</option>
-                    </select>
-                  </div>
+
                   <div>
                     <label className="block text-slate-300 mb-1">Reading Time</label>
                     <input
