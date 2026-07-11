@@ -6,21 +6,23 @@ import { motion } from 'motion/react';
 interface AIWriterModalProps {
   onClose: () => void;
   onPublishArticle: (article: Article) => void;
+  onUpdateArticle?: (article: Article) => void;
   authors: Author[];
+  articleToEdit?: Article | null;
 }
 
-export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublishArticle, authors }) => {
-  const [activeTab, setActiveTab] = useState<'ai' | 'manual'>('ai');
+export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublishArticle, onUpdateArticle, authors, articleToEdit }) => {
+  const [activeTab, setActiveTab] = useState<'ai' | 'manual'>(articleToEdit ? 'manual' : 'ai');
 
   // AI Generation state
   const [topic, setTopic] = useState('');
-  const [category, setCategory] = useState<Category>('Nepal News');
+  const [category, setCategory] = useState<Category>(articleToEdit?.category || 'Nepal News');
   const [tone, setTone] = useState('Authoritative, journalistic, objective');
   const [isGenerating, setIsGenerating] = useState(false);
 
   // Manual & Full Editorial Form state (English & Nepali dual inputs)
-  const [titleEn, setTitleEn] = useState('');
-  const [titleNe, setTitleNe] = useState('');
+  const [titleEn, setTitleEn] = useState(articleToEdit?.title || '');
+  const [titleNe, setTitleNe] = useState(articleToEdit?.titleNe || '');
   const generateSlug = (text: string) => {
     return text
       .toLowerCase()
@@ -30,8 +32,8 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
       .replace(/^-+|-+$/g, '') || `news-${Date.now()}`;
   };
 
-  const [slug, setSlug] = useState('');
-  const [isManualSlug, setIsManualSlug] = useState(false);
+  const [slug, setSlug] = useState(articleToEdit?.slug || '');
+  const [isManualSlug, setIsManualSlug] = useState(Boolean(articleToEdit?.slug));
 
   const handleTitleEnChange = (val: string) => {
     setTitleEn(val);
@@ -46,19 +48,19 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
       setSlug(generateSlug(val));
     }
   };
-  const [excerptEn, setExcerptEn] = useState('');
-  const [excerptNe, setExcerptNe] = useState('');
-  const [contentEn, setContentEn] = useState('');
-  const [contentNe, setContentNe] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<Category>('Nepal News');
-  const [selectedAuthorId, setSelectedAuthorId] = useState(authors[0]?.id || 'auth-1');
-  const [imageUrl, setImageUrl] = useState('https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&q=80&w=1200');
-  const [metaTitle, setMetaTitle] = useState('');
-  const [metaDescription, setMetaDescription] = useState('');
-  const [focusKeyword, setFocusKeyword] = useState('');
-  const [tagsStr, setTagsStr] = useState('Nepal, News, Harendralamsal');
-  const [readingTime, setReadingTime] = useState('5 min read');
-  const [languageOption, setLanguageOption] = useState<'en' | 'ne' | 'both'>('both');
+  const [excerptEn, setExcerptEn] = useState(articleToEdit?.subtitle || '');
+  const [excerptNe, setExcerptNe] = useState(articleToEdit?.subtitleNe || '');
+  const [contentEn, setContentEn] = useState(articleToEdit?.content || '');
+  const [contentNe, setContentNe] = useState(articleToEdit?.contentNe || '');
+  const [selectedCategory, setSelectedCategory] = useState<Category>(articleToEdit?.category || 'Nepal News');
+  const [selectedAuthorId, setSelectedAuthorId] = useState(articleToEdit?.author?.id || authors[0]?.id || 'auth-1');
+  const [imageUrl, setImageUrl] = useState(articleToEdit?.image || 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&q=80&w=1200');
+  const [metaTitle, setMetaTitle] = useState(articleToEdit?.seo?.metaTitle || '');
+  const [metaDescription, setMetaDescription] = useState(articleToEdit?.seo?.metaDescription || '');
+  const [focusKeyword, setFocusKeyword] = useState(articleToEdit?.seo?.keywords?.[0] || '');
+  const [tagsStr, setTagsStr] = useState(articleToEdit?.tags?.join(', ') || 'Nepal, News, Harendralamsal');
+  const [readingTime, setReadingTime] = useState(articleToEdit?.readTime || '5 min read');
+  const [languageOption, setLanguageOption] = useState<'en' | 'ne' | 'both'>(articleToEdit?.languageOption || 'both');
 
   const categoriesList: Category[] = [
     'Nepal News',
@@ -151,38 +153,64 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
     const tagsArray = tagsStr.split(',').map(t => t.trim()).filter(Boolean);
 
     const finalSlug = slug.trim() ? slug : generateSlug(finalTitle);
-    const newArticle: Article = {
-      id: `art-custom-${Date.now()}`,
-      title: finalTitle,
-      slug: finalSlug,
-      subtitle: finalExcerpt || 'Published via Harendralamsal Editorial Cockpit.',
-      content: finalContent || finalTitle,
-      languageOption,
-      titleNe: titleNe.trim() || undefined,
-      subtitleNe: excerptNe.trim() || undefined,
-      contentNe: contentNe.trim() || undefined,
-      category: selectedCategory,
-      tags: tagsArray.length > 0 ? tagsArray : ['Nepal News', 'Breaking'],
-      author,
-      publishedAt: 'Just now',
-      readTime: readingTime,
-      views: 145,
-      likes: 18,
-      bookmarks: 7,
-      featured: false,
-      breaking: true,
-      image: imageUrl,
-      aiSummary: metaDescription || finalExcerpt || 'Verified intelligence report.',
-      sentiment: 'Tech-Optimistic',
-      seo: {
-        metaTitle: metaTitle || finalTitle,
-        metaDescription: metaDescription || finalExcerpt,
-        keywords: tagsArray
-      },
-      comments: []
-    };
+    if (articleToEdit && onUpdateArticle) {
+      const updatedArticle: Article = {
+        ...articleToEdit,
+        title: finalTitle,
+        slug: finalSlug,
+        subtitle: finalExcerpt || articleToEdit.subtitle,
+        content: finalContent || articleToEdit.content,
+        languageOption,
+        titleNe: titleNe.trim() || undefined,
+        subtitleNe: excerptNe.trim() || undefined,
+        contentNe: contentNe.trim() || undefined,
+        category: selectedCategory,
+        tags: tagsArray.length > 0 ? tagsArray : articleToEdit.tags,
+        author,
+        readTime: readingTime,
+        image: imageUrl,
+        aiSummary: metaDescription || finalExcerpt || articleToEdit.aiSummary,
+        seo: {
+          metaTitle: metaTitle || finalTitle,
+          metaDescription: metaDescription || finalExcerpt,
+          keywords: tagsArray
+        }
+      };
+      onUpdateArticle(updatedArticle);
+    } else {
+      const newArticle: Article = {
+        id: `art-custom-${Date.now()}`,
+        title: finalTitle,
+        slug: finalSlug,
+        subtitle: finalExcerpt || 'Published via Harendralamsal Editorial Cockpit.',
+        content: finalContent || finalTitle,
+        languageOption,
+        titleNe: titleNe.trim() || undefined,
+        subtitleNe: excerptNe.trim() || undefined,
+        contentNe: contentNe.trim() || undefined,
+        category: selectedCategory,
+        tags: tagsArray.length > 0 ? tagsArray : ['Nepal News', 'Breaking'],
+        author,
+        publishedAt: 'Just now',
+        readTime: readingTime,
+        views: 145,
+        likes: 18,
+        bookmarks: 7,
+        featured: false,
+        breaking: true,
+        image: imageUrl,
+        aiSummary: metaDescription || finalExcerpt || 'Verified intelligence report.',
+        sentiment: 'Tech-Optimistic',
+        seo: {
+          metaTitle: metaTitle || finalTitle,
+          metaDescription: metaDescription || finalExcerpt,
+          keywords: tagsArray
+        },
+        comments: articleToEdit?.comments || []
+      };
 
-    onPublishArticle(newArticle);
+      onPublishArticle(newArticle);
+    }
     onClose();
   };
 

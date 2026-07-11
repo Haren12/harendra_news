@@ -14,7 +14,8 @@ import {
   Settings,
   HardDrive,
   Megaphone,
-  Mail
+  Mail,
+  Edit3
 } from 'lucide-react';
 import { MediaLibraryView } from './MediaLibraryView';
 import { AdManagerView } from './AdManagerView';
@@ -26,6 +27,7 @@ interface DashboardViewProps {
   systemLogs: SystemLog[];
   authors: Author[];
   onDeleteArticle: (id: string) => void;
+  onEditArticle: (article: Article) => void;
   onOpenAIWriter: () => void;
   onOpenSupabaseConfig: () => void;
 }
@@ -35,6 +37,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   systemLogs,
   authors,
   onDeleteArticle,
+  onEditArticle,
   onOpenAIWriter,
   onOpenSupabaseConfig,
 }) => {
@@ -220,13 +223,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <td className="py-4">{art.author.name}</td>
                     <td className="py-4">{art.views.toLocaleString()}</td>
                     <td className="py-4">
-                      <button
-                        onClick={() => setArticleToDelete(art)}
-                        className="p-2 rounded-xl bg-rose-500/20 text-rose-400 hover:bg-rose-500/30 border border-rose-500/30 cursor-pointer"
-                        title="Delete Dispatch"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => onEditArticle(art)}
+                          className="p-2 rounded-xl bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 border border-cyan-500/30 cursor-pointer"
+                          title="Edit Dispatch"
+                        >
+                          <Edit3 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => setArticleToDelete(art)}
+                          className="p-2 rounded-xl bg-rose-500/20 text-rose-400 hover:bg-rose-500/30 border border-rose-500/30 cursor-pointer"
+                          title="Delete Dispatch"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

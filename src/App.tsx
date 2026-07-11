@@ -178,6 +178,8 @@ export default function App() {
     }));
   };
 
+  const [editingArticle, setEditingArticle] = useState<Article | null>(null);
+
   const handlePublishArticle = (newArticle: Article) => {
     setArticles(prev => [newArticle, ...prev]);
     const newLog: SystemLog = {
@@ -189,6 +191,20 @@ export default function App() {
     };
     setSystemLogs(prev => [newLog, ...prev]);
     setSuccessMessage(`Successfully published dispatch: "${newArticle.title}"!`);
+    setTimeout(() => setSuccessMessage(null), 4500);
+  };
+
+  const handleUpdateArticle = (updatedArticle: Article) => {
+    setArticles(prev => prev.map(a => a.id === updatedArticle.id ? updatedArticle : a));
+    const newLog: SystemLog = {
+      id: `log-${Date.now()}`,
+      timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
+      level: 'success',
+      message: `Updated dispatch: "${updatedArticle.title}"`,
+      source: 'EditorialEditor'
+    };
+    setSystemLogs(prev => [newLog, ...prev]);
+    setSuccessMessage(`Successfully updated dispatch: "${updatedArticle.title}"!`);
     setTimeout(() => setSuccessMessage(null), 4500);
   };
 
@@ -288,7 +304,14 @@ export default function App() {
             systemLogs={systemLogs}
             authors={authors}
             onDeleteArticle={handleDeleteArticle}
-            onOpenAIWriter={() => setIsAIWriterOpen(true)}
+            onEditArticle={(art) => {
+              setEditingArticle(art);
+              setIsAIWriterOpen(true);
+            }}
+            onOpenAIWriter={() => {
+              setEditingArticle(null);
+              setIsAIWriterOpen(true);
+            }}
             onOpenSupabaseConfig={() => setIsSupabaseConfigOpen(true)}
           />
         )}
@@ -330,9 +353,14 @@ export default function App() {
 
       {isAIWriterOpen && (
         <AIWriterModal
-          onClose={() => setIsAIWriterOpen(false)}
+          onClose={() => {
+            setIsAIWriterOpen(false);
+            setEditingArticle(null);
+          }}
           onPublishArticle={handlePublishArticle}
+          onUpdateArticle={handleUpdateArticle}
           authors={authors}
+          articleToEdit={editingArticle}
         />
       )}
 
