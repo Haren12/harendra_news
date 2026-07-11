@@ -16,6 +16,19 @@ const getGeminiClient = () => {
   return new GoogleGenAI({ apiKey });
 };
 
+const parseJsonSafely = (text: string) => {
+  if (!text) return {};
+  try {
+    let clean = text.trim();
+    clean = clean.replace(/```json\s*([\s\S]*?)\s*```/g, '$1');
+    clean = clean.replace(/```\s*([\s\S]*?)\s*```/g, '$1');
+    return JSON.parse(clean);
+  } catch (e) {
+    console.error("Failed to parse JSON from AI response:", text, e);
+    return {};
+  }
+};
+
 const app = express();
 const PORT = 3000;
 
@@ -108,7 +121,7 @@ Return ONLY valid JSON with keys: "summary", "tags" (array of strings), "reading
     });
 
     const resultText = response.text;
-    const parsed = JSON.parse(resultText || "{}");
+    const parsed = parseJsonSafely(resultText);
     res.json(parsed);
   } catch (error: any) {
     console.error("AI Summarize error, returning fallback:", error);
@@ -169,7 +182,7 @@ Return ONLY valid JSON with keys:
     });
 
     const resultText = response.text;
-    const parsed = JSON.parse(resultText || "{}");
+    const parsed = parseJsonSafely(resultText);
     res.json(parsed);
   } catch (error: any) {
     console.error("AI Writer error, returning fallback:", error);
@@ -214,7 +227,7 @@ Return ONLY valid JSON with keys: "translatedTitle", "translatedContent".`;
       },
     });
 
-    const parsed = JSON.parse(response.text || "{}");
+    const parsed = parseJsonSafely(response.text);
     res.json(parsed);
   } catch (error: any) {
     console.error("AI Translate error:", error);
@@ -245,7 +258,7 @@ Return ONLY valid JSON with keys:
       },
     });
 
-    const parsed = JSON.parse(response.text || "{}");
+    const parsed = parseJsonSafely(response.text);
     res.json(parsed);
   } catch (error: any) {
     console.error("AI SEO error:", error);
