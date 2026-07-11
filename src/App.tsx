@@ -72,7 +72,16 @@ export default function App() {
                 aiSummary: d.ai_summary || '',
                 sentiment: d.sentiment || 'Objective'
               }));
-              setArticles(mapped);
+              setArticles(prev => {
+                const prevMap = new Map(prev.map(a => [a.id, a]));
+                const merged = mapped.map(remoteArt => {
+                  const localArt = prevMap.get(remoteArt.id);
+                  return localArt || remoteArt;
+                });
+                const remoteIds = new Set(mapped.map(m => m.id));
+                const localOnly = prev.filter(p => !remoteIds.has(p.id));
+                return [...localOnly, ...merged];
+              });
               return;
             } else {
               // Table is empty, seed mock articles into Supabase
@@ -97,7 +106,7 @@ export default function App() {
                   published_at: getValidTimestamp(art.publishedAt)
                 }, { onConflict: 'id' });
               }
-              setArticles(mockArticles);
+              setArticles(prev => prev.length > 0 ? prev : mockArticles);
               return;
             }
           }
@@ -113,7 +122,11 @@ export default function App() {
         .then(res => res.json())
         .then(data => {
           if (Array.isArray(data) && data.length > 0) {
-            setArticles(data);
+            setArticles(prev => {
+              const remoteIds = new Set(data.map((d: any) => d.id));
+              const localOnly = prev.filter(p => !remoteIds.has(p.id));
+              return [...localOnly, ...data];
+            });
           }
         })
         .catch(err => console.log('Using local articles store', err));
@@ -175,20 +188,11 @@ export default function App() {
   // Language & Auth state
   const [currentLanguage, setCurrentLanguage] = useState<Language>('ne'); // Default to Nepali as requested by user
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(() => {
-    const role = localStorage.getItem('admin_role');
-    const expiry = localStorage.getItem('admin_expiry');
-    if (role && expiry && Date.now() < Number(expiry)) {
-      return role;
-    }
-    localStorage.removeItem('admin_role');
-    localStorage.removeItem('admin_name');
-    localStorage.removeItem('admin_expiry');
-    return null;
+    return localStorage.getItem('admin_role');
   });
   const [currentUserName, setCurrentUserName] = useState<string | null>(() => {
     return localStorage.getItem('admin_name');
   });
-  const [sessionSeconds, setSessionSeconds] = useState<number>(300); // 5 minutes = 300 seconds
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const handleOpenAIWriter = () => {
@@ -206,54 +210,6 @@ export default function App() {
     }
     setCurrentView('dashboard');
   };
-
-  useEffect(() => {
-    if (!currentUserRole) return;
-
-    setSessionSeconds(300);
-    localStorage.setItem('admin_expiry', String(Date.now() + 300000));
-
-    const timer = setInterval(() => {
-      setSessionSeconds(prev => {
-        const expiry = Number(localStorage.getItem('admin_expiry') || 0);
-        if (Date.now() >= expiry || prev <= 1) {
-          clearInterval(timer);
-          setCurrentUserRole(null);
-          setCurrentUserName(null);
-          localStorage.removeItem('admin_role');
-          localStorage.removeItem('admin_name');
-          localStorage.removeItem('admin_expiry');
-          setSystemLogs(l => [{
-            id: `log-${Date.now()}`,
-            timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
-            level: 'warning',
-            message: `Admin session expired (5-minute inactivity limit). Auto-logged out.`,
-            source: 'SecurityManager'
-          }, ...l]);
-          return 0;
-        }
-        const remaining = Math.max(0, Math.floor((expiry - Date.now()) / 1000));
-        return remaining;
-      });
-    }, 1000);
-
-    const handleActivity = () => {
-      const newExpiry = Date.now() + 300000;
-      localStorage.setItem('admin_expiry', String(newExpiry));
-      setSessionSeconds(300);
-    };
-
-    window.addEventListener('mousemove', handleActivity);
-    window.addEventListener('keydown', handleActivity);
-    window.addEventListener('click', handleActivity);
-
-    return () => {
-      clearInterval(timer);
-      window.removeEventListener('mousemove', handleActivity);
-      window.removeEventListener('keydown', handleActivity);
-      window.removeEventListener('click', handleActivity);
-    };
-  }, [currentUserRole]);
 
   // Modals & Drawers state
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -345,7 +301,6 @@ export default function App() {
     setCurrentUserName(name);
     localStorage.setItem('admin_role', role);
     localStorage.setItem('admin_name', name);
-    localStorage.setItem('admin_expiry', String(Date.now() + 300000));
     const newLog: SystemLog = {
       id: `log-${Date.now()}`,
       timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
@@ -361,7 +316,6 @@ export default function App() {
     setCurrentUserName(null);
     localStorage.removeItem('admin_role');
     localStorage.removeItem('admin_name');
-    localStorage.removeItem('admin_expiry');
   };
 
   const currentLangArticles = articles;
@@ -399,7 +353,6 @@ export default function App() {
         currentUserRole={currentUserRole}
         currentUserName={currentUserName}
         onLogout={handleLogout}
-        sessionSeconds={sessionSeconds}
       />
 
       {/* Main View Router */}

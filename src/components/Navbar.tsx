@@ -35,7 +35,6 @@ interface NavbarProps {
   currentUserRole: string | null;
   currentUserName: string | null;
   onLogout: () => void;
-  sessionSeconds: number;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -54,8 +53,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onLanguageChange,
   currentUserRole,
   currentUserName,
-  onLogout,
-  sessionSeconds
+  onLogout
 }) => {
   const t = translations[currentLanguage];
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -224,29 +222,21 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           {/* Admin Login / User State */}
-          {currentUserRole ? (() => {
-            const minutes = Math.floor(sessionSeconds / 60);
-            const seconds = sessionSeconds % 60;
-            const timeFormatted = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            return (
-              <div className="flex items-center gap-2 bg-slate-900 border border-emerald-500/40 px-3 py-1.5 rounded-xl text-xs">
-                <UserCheck className="w-4 h-4 text-emerald-400" />
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <p className="text-[10px] text-emerald-400 font-bold">{currentUserRole}</p>
-                    <span className="text-[9px] font-mono text-amber-400 bg-amber-500/10 px-1 rounded" title="Auto-logout session timer (5 minutes)">⏱️ {timeFormatted}</span>
-                  </div>
-                  <p className="text-[10px] text-slate-300 truncate max-w-[90px]">{currentUserName}</p>
-                </div>
-                <button 
-                  onClick={onLogout}
-                  className="text-slate-400 hover:text-red-400 ml-2 text-[10px] underline cursor-pointer"
-                >
-                  Logout
-                </button>
+          {currentUserRole ? (
+            <div className="flex items-center gap-2 bg-slate-900 border border-emerald-500/40 px-3 py-1.5 rounded-xl text-xs">
+              <UserCheck className="w-4 h-4 text-emerald-400" />
+              <div>
+                <p className="text-[10px] text-emerald-400 font-bold">{currentUserRole}</p>
+                <p className="text-[10px] text-slate-300 truncate max-w-[90px]">{currentUserName}</p>
               </div>
-            );
-          })() : (
+              <button 
+                onClick={onLogout}
+                className="text-slate-400 hover:text-red-400 ml-2 text-[10px] underline cursor-pointer"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
             <button
               onClick={onOpenAdminLogin}
               className="flex items-center gap-2 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 px-4 py-2 rounded-xl text-xs border border-cyan-500/40 hover:border-cyan-400 transition-all cursor-pointer shadow-lg shadow-cyan-500/10"
