@@ -1,5 +1,15 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pg_trgm";
+-- Run this in your Supabase SQL Editor to fix ID type mismatch (uuid vs text like 'art-1')
+
+DROP TABLE IF EXISTS public.comments CASCADE;
+DROP TABLE IF EXISTS public.bookmarks CASCADE;
+DROP TABLE IF EXISTS public.likes CASCADE;
+DROP TABLE IF EXISTS public.articles CASCADE;
+DROP TABLE IF EXISTS public.authors CASCADE;
+DROP TABLE IF EXISTS public.categories CASCADE;
+DROP TABLE IF EXISTS public.profiles CASCADE;
+DROP TABLE IF EXISTS public.media_library CASCADE;
+DROP TABLE IF EXISTS public.subscribers CASCADE;
+DROP TABLE IF EXISTS public.advertisements CASCADE;
 
 CREATE TABLE IF NOT EXISTS public.profiles (
     id TEXT PRIMARY KEY,
@@ -30,6 +40,31 @@ CREATE TABLE IF NOT EXISTS public.authors (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS public.articles (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    slug TEXT,
+    subtitle TEXT,
+    content TEXT NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    tags TEXT[],
+    author_id TEXT,
+    published_at TIMESTAMPTZ DEFAULT NOW(),
+    read_time VARCHAR(50) DEFAULT '5 min read',
+    views INT DEFAULT 0,
+    likes INT DEFAULT 0,
+    bookmarks INT DEFAULT 0,
+    featured BOOLEAN DEFAULT FALSE,
+    breaking BOOLEans DEFAULT FALSE,
+    image TEXT,
+    ai_summary TEXT,
+    sentiment VARCHAR(50) DEFAULT 'Objective',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMEST_STAMP DEFAULT NOW()
+);
+
+-- Fix typo breaking BOOLEANS to BOOLEAN
+DROP TABLE IF EXISTS public.articles CASCADE;
 CREATE TABLE IF NOT EXISTS public.articles (
     id TEXT PRIMARY KEY,
     title TEXT NOT NULL,
@@ -145,12 +180,12 @@ CREATE POLICY "Public insert subscribers" ON public.subscribers FOR INSERT WITH 
 DROP POLICY IF EXISTS "Public read advertisements" ON public.advertisements;
 CREATE POLICY "Public read advertisements" ON public.advertisements FOR SELECT USING (true);
 
-INSERT INTO public.categories (name, slug, description) VALUES
-('Nepal News', 'nepal-news', 'National news and political updates from Nepal'),
-('World News', 'world-news', 'Global headlines and international relations'),
-('Technology', 'technology', 'AI, tech innovations and digital transformation'),
-('Economy &Banking', 'economy-banking', 'Banking, finance and economic growth'),
-('Tourism', 'tourism', 'Himalayan tourism, culture and travel')
+INSERT INTO public.categories (id, name, slug, description) VALUES
+('cat-1', 'Nepal News', 'nepal-news', 'National news and political updates from Nepal'),
+('cat-2', 'World News', 'world-news', 'Global headlines and international relations'),
+('cat-3', 'Technology', 'technology', 'AI, tech innovations and digital transformation'),
+('cat-4', 'Economy & Banking', 'economy-banking', 'Banking, finance and economic growth'),
+('cat-5', 'Tourism', 'tourism', 'Himalayan tourism, culture and travel')
 ON CONFLICT (slug) DO NOTHING;
 
 INSERT INTO public.authors (id, name, title, avatar, bio) VALUES
