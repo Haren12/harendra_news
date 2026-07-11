@@ -12,7 +12,18 @@ interface HeroSliderProps {
 
 export const HeroSlider: React.FC<HeroSliderProps> = ({ articles, onSelectArticle, currentLanguage }) => {
   const t = translations[currentLanguage];
-  const featured = articles.filter(a => a.featured || a.breaking);
+  const langFiltered = articles.filter(a => {
+    const isFeaturedMatch = a.featured || a.breaking;
+    if (!isFeaturedMatch) return false;
+    if (currentLanguage === 'ne') {
+      return a.languageOption === 'ne' || a.languageOption === 'both' || a.category === 'Nepal News' || a.category === 'Local News' || a.category === 'Province News' || a.titleNe;
+    } else if (currentLanguage === 'en') {
+      return a.languageOption === 'en' || a.languageOption === 'both' || a.category === 'Technology' || a.category === 'World News' || a.category === 'Business';
+    }
+    return true;
+  });
+
+  const featured = langFiltered.length > 0 ? langFiltered : articles.filter(a => a.featured || a.breaking);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {

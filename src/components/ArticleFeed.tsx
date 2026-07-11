@@ -26,9 +26,17 @@ export const ArticleFeed: React.FC<ArticleFeedProps> = ({
   currentLanguage,
 }) => {
   const t = translations[currentLanguage];
-  const filtered = selectedCategory === 'All' 
-    ? articles 
-    : articles.filter(a => a.category === selectedCategory);
+  const langFiltered = articles.filter(a => {
+    if (currentLanguage === 'ne') {
+      return a.languageOption === 'ne' || a.languageOption === 'both' || a.category === 'Nepal News' || a.category === 'Local News' || a.category === 'Province News' || a.titleNe;
+    } else if (currentLanguage === 'en') {
+      return a.languageOption === 'en' || a.languageOption === 'both' || a.category === 'Technology' || a.category === 'World News' || a.category === 'Business' || a.category === 'Science & AI';
+    }
+    return true;
+  });
+
+  const categoryFiltered = (langFiltered.length > 0 ? langFiltered : articles).filter(a => selectedCategory === 'All' || a.category === selectedCategory);
+  const filtered = categoryFiltered.length > 0 ? categoryFiltered : (selectedCategory === 'All' ? articles : articles.filter(a => a.category === selectedCategory));
 
   const translatedCategoryName = t.categories[selectedCategory as keyof typeof t.categories] || selectedCategory;
 

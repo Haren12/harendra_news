@@ -116,21 +116,33 @@ ALTER TABLE public.media_library ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.subscribers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.advertisements ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Public read articles" ON public.articles;
 CREATE POLICY "Public read articles" ON public.articles FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public insert articles" ON public.articles;
 CREATE POLICY "Public insert articles" ON public.articles FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Public update articles" ON public.articles;
 CREATE POLICY "Public update articles" ON public.articles FOR UPDATE USING (true);
 
+DROP POLICY IF EXISTS "Public read categories" ON public.categories;
 CREATE POLICY "Public read categories" ON public.categories FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public read authors" ON public.authors;
 CREATE POLICY "Public read authors" ON public.authors FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public read comments" ON public.comments;
 CREATE POLICY "Public read comments" ON public.comments FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public insert comments" ON public.comments;
 CREATE POLICY "Public insert comments" ON public.comments FOR INSERT WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Public read media" ON public.media_library;
 CREATE POLICY "Public read media" ON public.media_library FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public insert media" ON public.media_library;
 CREATE POLICY "Public insert media" ON public.media_library FOR INSERT WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Public read subscribers" ON public.subscribers;
 CREATE POLICY "Public read subscribers" ON public.subscribers FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public insert subscribers" ON public.subscribers;
 CREATE POLICY "Public insert subscribers" ON public.subscribers FOR INSERT WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Public read advertisements" ON public.advertisements;
 CREATE POLICY "Public read advertisements" ON public.advertisements FOR SELECT USING (true);
 
 INSERT INTO public.categories (name, slug, description) VALUES
