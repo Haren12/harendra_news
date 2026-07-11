@@ -21,6 +21,7 @@ import { MediaLibraryView } from './MediaLibraryView';
 import { AdManagerView } from './AdManagerView';
 import { NewsletterView } from './NewsletterView';
 import { SystemHealthView } from './SystemHealthView';
+import { getAuthorAvatar, harendraAvatar } from '../utils/avatar';
 
 interface DashboardViewProps {
   articles: Article[];
@@ -294,7 +295,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {authors.map((auth) => (
               <div key={auth.id} className="bg-slate-950/80 border border-cyan-500/20 rounded-2xl p-5 flex items-center gap-4">
-                <img src={auth.avatar} alt={auth.name} className="w-16 h-16 rounded-2xl object-cover border border-cyan-500/40" />
+                <img src={getAuthorAvatar(auth)} alt={auth.name} className="w-16 h-16 rounded-2xl object-cover border border-cyan-500/40" onError={(e) => { (e.target as HTMLImageElement).src = harendraAvatar; }} />
                 <div className="space-y-1 font-mono">
                   <h4 className="font-bold text-white text-sm font-sans">{auth.name}</h4>
                   <p className="text-xs text-cyan-400">{auth.role}</p>

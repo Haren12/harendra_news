@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Cpu, ShieldCheck, Send, CheckCircle2, Mail, Phone, ExternalLink } from 'lucide-react';
 import { Language, translations } from '../utils/translations';
+import harendraAvatar from '../assets/harendra_avatar.jpg';
 
 interface FooterProps {
   onOpenSupabaseConfig: () => void;
@@ -23,6 +24,51 @@ export const Footer: React.FC<FooterProps> = ({ onOpenSupabaseConfig, currentLan
   return (
     <footer className="bg-slate-950 border-t border-cyan-500/20 text-slate-400 font-sans mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+        
+        {/* CEO & Founder Portrait Showcase Banner */}
+        <div className="bg-gradient-to-r from-slate-900 via-cyan-950/40 to-slate-900 border border-cyan-500/30 rounded-3xl p-6 sm:p-8 mb-12 shadow-2xl shadow-cyan-950/50 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-5">
+            <div className="relative">
+              <img 
+                src={harendraAvatar} 
+                alt="Harendra Lamsal - CEO & Founder" 
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover border-2 border-cyan-400 shadow-xl shadow-cyan-500/40 bg-slate-800 brightness-110 contrast-110"
+                onError={(e) => { (e.target as HTMLImageElement).src = harendraAvatar; }}
+              />
+              <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-slate-950 animate-pulse"></span>
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[10px] font-mono bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded border border-cyan-500/40">EXECUTIVE LEADERSHIP</span>
+                <span className="text-[10px] font-mono text-slate-400">Kathmandu, Nepal</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-white font-sans tracking-tight">Harendra Lamsal</h3>
+              <p className="text-xs sm:text-sm text-cyan-400 font-mono mt-0.5">CEO & Founder, Chief Editor & Lead Architect</p>
+              <p className="text-xs text-slate-300 font-sans mt-2 max-w-xl">
+                Leading sovereign digital infrastructure, post-quantum cryptography meshes, and AI-powered public service delivery across Nepal and South Asia.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-3 font-mono text-xs">
+            <a 
+              href="mailto:harendralamsal4140@gmail.com" 
+              className="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold"
+            >
+              <Mail className="w-4 h-4 text-cyan-400" />
+              <span>Direct Dispatch</span>
+            </a>
+            <a 
+              href="https://www.linkedin.com/in/harendra-lamsal-728a6122b" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="bg-slate-900 hover:bg-slate-800 text-slate-200 border border-cyan-500/20 px-4 py-2.5 rounded-xl transition-all flex items-center gap-2"
+            >
+              <ExternalLink className="w-4 h-4 text-cyan-400" />
+              <span>LinkedIn Profile</span>
+            </a>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           {/* Col 1: Brand & Bio */}
           <div className="space-y-4">

@@ -35,6 +35,35 @@
     "sentiment": "Tech-Optimistic"
   },
   {
+    "id": "art-14",
+    "title": "Tribhuvan University Deploys Autonomous AI Tutors Across All Constituent Campuses",
+    "slug": "tribhuvan-university-deploys-autonomous-ai-tutors-across-all-constituent-campuses",
+    "subtitle": "Personalized quantum LLM tutors provide multilingual academic coaching in Nepali, Newari, Maithili, and English.",
+    "content": "Higher education in Nepal is embracing autonomous cognitive tooling. Tribhuvan University has officially activated localized LLM tutoring modules across its 60+ constituent campuses.",
+    "category": "Education",
+    "tags": [
+      "Education",
+      "AI Tutors",
+      "University",
+      "EdTech"
+    ],
+    "author": {
+      "name": "Harendra Lamsal",
+      "title": "Editor-in-Chief",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
+    },
+    "publishedAt": "2026-07-11T09:31:24.768+00:00",
+    "readTime": "4 min read",
+    "views": 18900,
+    "likes": 1450,
+    "bookmarks": 510,
+    "featured": false,
+    "breaking": false,
+    "image": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1200",
+    "aiSummary": "Tribhuvan University deploys localized AI tutors across campuses, offering multilingual academic coaching in regional languages.",
+    "sentiment": "Tech-Optimistic"
+  },
+  {
     "id": "art-13",
     "title": "Nepal Central Bank Introduces Interoperable Sovereign Digital Rupee Gateway",
     "slug": "nepal-central-bank-introduces-interoperable-sovereign-digital-rupee-gateway",
@@ -93,17 +122,17 @@
     "sentiment": "Tech-Optimistic"
   },
   {
-    "id": "art-12",
-    "title": "Gandaki Province Announces High-Tech Agricultural Drone Subsidy for Farmers",
-    "slug": "gandaki-province-announces-high-tech-agricultural-drone-subsidy-for-farmers",
-    "subtitle": "Over 5,000 agrarian cooperatives receive automated crop-spraying and soil-analysis drones to boost organic cardamom and tea yields.",
-    "content": "Agriculture modernization in provincial Nepal took a giant leap forward today as Gandaki Province unveiled its agrarian autonomy initiative.\n\n### Precision Farming\nFarmers equipped with AI-guided drones can now pinpoint irrigation needs and nutrient deficiencies across rugged terraced farmlands with centimeter-level precision.",
-    "category": "Province News",
+    "id": "art-16",
+    "title": "National Cyber Security Center Neutralizes Sophisticated Zero-Day Phishing Syndicate",
+    "slug": "national-cyber-security-center-neutralizes-sophisticated-zero-day-phishing-syndicate",
+    "subtitle": "Automated threat hunting nodes trace cybercriminal ring across international proxy networks within 43 minutes.",
+    "content": "Law enforcement and national cyber defense units achieved a major victory today by dismantling an automated phishing and credential-harvesting cartel operating across multiple jurisdictions.",
+    "category": "Crime & Security",
     "tags": [
-      "Gandaki",
-      "Agriculture",
-      "Province News",
-      "Drones"
+      "Cybersecurity",
+      "Crime",
+      "National Security",
+      "Defense"
     ],
     "author": {
       "name": "Harendra Lamsal",
@@ -112,13 +141,13 @@
     },
     "publishedAt": "2026-07-11T09:31:24.768+00:00",
     "readTime": "4 min read",
-    "views": 14200,
-    "likes": 980,
-    "bookmarks": 390,
+    "views": 22400,
+    "likes": 1870,
+    "bookmarks": 740,
     "featured": false,
     "breaking": false,
-    "image": "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&q=80&w=1200",
-    "aiSummary": "Gandaki Province subsidizes AI agricultural drones for 5,000 farming cooperatives to boost tea and cardamom yields.",
+    "image": "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1200",
+    "aiSummary": "National cybersecurity center neutralizes international phishing syndicate in 43 minutes using automated threat hunting.",
     "sentiment": "Tech-Optimistic"
   },
   {
@@ -151,17 +180,17 @@
     "sentiment": "Tech-Optimistic"
   },
   {
-    "id": "art-16",
-    "title": "National Cyber Security Center Neutralizes Sophisticated Zero-Day Phishing Syndicate",
-    "slug": "national-cyber-security-center-neutralizes-sophisticated-zero-day-phishing-syndicate",
-    "subtitle": "Automated threat hunting nodes trace cybercriminal ring across international proxy networks within 43 minutes.",
-    "content": "Law enforcement and national cyber defense units achieved a major victory today by dismantling an automated phishing and credential-harvesting cartel operating across multiple jurisdictions.",
-    "category": "Crime & Security",
+    "id": "art-18",
+    "title": "Quantum Neural Labs Achieve Breakthrough in Room-Temperature Superconductors",
+    "slug": "quantum-neural-labs-achieve-breakthrough-in-room-temperature-superconductors",
+    "subtitle": "New material matrix enables lossless power transmission across national grids with zero thermal dissipation.",
+    "content": "Physicists at the Quantum Neural Research Complex have synthesized a stable room-temperature superconductor alloy capable of revolutionizing global energy distribution.",
+    "category": "Science & AI",
     "tags": [
-      "Cybersecurity",
-      "Crime",
-      "National Security",
-      "Defense"
+      "Science",
+      "Superconductors",
+      "Physics",
+      "Clean Energy"
     ],
     "author": {
       "name": "Harendra Lamsal",
@@ -169,44 +198,15 @@
       "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
     },
     "publishedAt": "2026-07-11T09:31:24.768+00:00",
-    "readTime": "4 min read",
-    "views": 22400,
-    "likes": 1870,
-    "bookmarks": 740,
-    "featured": false,
+    "readTime": "6 min read",
+    "views": 41200,
+    "likes": 4920,
+    "bookmarks": 2100,
+    "featured": true,
     "breaking": false,
-    "image": "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1200",
-    "aiSummary": "National cybersecurity center neutralizes international phishing syndicate in 43 minutes using automated threat hunting.",
+    "image": "https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&q=80&w=1200",
+    "aiSummary": "Breakthrough room-temperature superconductor alloy enables lossless power transmission across national grids with zero thermal dissipation.",
     "sentiment": "Tech-Optimistic"
-  },
-  {
-    "id": "art-7",
-    "title": "Immersive Neural Cinema: The Rise of Direct-to-Cortex Sensory Films",
-    "slug": "immersive-neural-cinema-the-rise-of-direct-to-cortex-sensory-films",
-    "subtitle": "Hollywood studios debut first fully synthesized limbic narratives where audiences experience emotional resonance and olfactory simulation.",
-    "content": "Entertainment is breaking free from rectangular screens and audio speakers. A new wave of cinematic pioneers has released the world's first certified *Limbic Feature Film*, transmitting multi-sensory emotional narratives directly into consumer neural headsets.\n\n### Ethical and Creative Boundaries\nWhile critics debate the sensory manipulation potential of direct-to-cortex storytelling, box office returns for opening weekend shattered traditional records as millions experienced visceral, shared narrative immersion.",
-    "category": "Entertainment",
-    "tags": [
-      "VR / AR",
-      "Cinema",
-      "Neural Media",
-      "Entertainment"
-    ],
-    "author": {
-      "name": "Harendra Lamsal",
-      "title": "Editor-in-Chief",
-      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
-    },
-    "publishedAt": "2026-07-11T09:31:24.768+00:00",
-    "readTime": "4 min read",
-    "views": 16500,
-    "likes": 980,
-    "bookmarks": 420,
-    "featured": false,
-    "breaking": false,
-    "image": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=1200",
-    "aiSummary": "Hollywood debuts direct-to-cortex limbic cinema, allowing audiences to experience emotional and sensory narratives through neural headsets.",
-    "sentiment": "Neutral"
   },
   {
     "id": "art-15",
@@ -267,6 +267,35 @@
     "sentiment": "Tech-Optimistic"
   },
   {
+    "id": "art-7",
+    "title": "Immersive Neural Cinema: The Rise of Direct-to-Cortex Sensory Films",
+    "slug": "immersive-neural-cinema-the-rise-of-direct-to-cortex-sensory-films",
+    "subtitle": "Hollywood studios debut first fully synthesized limbic narratives where audiences experience emotional resonance and olfactory simulation.",
+    "content": "Entertainment is breaking free from rectangular screens and audio speakers. A new wave of cinematic pioneers has released the world's first certified *Limbic Feature Film*, transmitting multi-sensory emotional narratives directly into consumer neural headsets.\n\n### Ethical and Creative Boundaries\nWhile critics debate the sensory manipulation potential of direct-to-cortex storytelling, box office returns for opening weekend shattered traditional records as millions experienced visceral, shared narrative immersion.",
+    "category": "Entertainment",
+    "tags": [
+      "VR / AR",
+      "Cinema",
+      "Neural Media",
+      "Entertainment"
+    ],
+    "author": {
+      "name": "Harendra Lamsal",
+      "title": "Editor-in-Chief",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
+    },
+    "publishedAt": "2026-07-11T09:31:24.768+00:00",
+    "readTime": "4 min read",
+    "views": 16500,
+    "likes": 980,
+    "bookmarks": 420,
+    "featured": false,
+    "breaking": false,
+    "image": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=1200",
+    "aiSummary": "Hollywood debuts direct-to-cortex limbic cinema, allowing audiences to experience emotional and sensory narratives through neural headsets.",
+    "sentiment": "Neutral"
+  },
+  {
     "id": "art-10",
     "title": "Global Climate Summit Adopts Himalayan Glacier Preservation Protocol",
     "slug": "global-climate-summit-adopts-himalayan-glacier-preservation-protocol",
@@ -325,17 +354,17 @@
     "sentiment": "Tech-Optimistic"
   },
   {
-    "id": "art-14",
-    "title": "Tribhuvan University Deploys Autonomous AI Tutors Across All Constituent Campuses",
-    "slug": "tribhuvan-university-deploys-autonomous-ai-tutors-across-all-constituent-campuses",
-    "subtitle": "Personalized quantum LLM tutors provide multilingual academic coaching in Nepali, Newari, Maithili, and English.",
-    "content": "Higher education in Nepal is embracing autonomous cognitive tooling. Tribhuvan University has officially activated localized LLM tutoring modules across its 60+ constituent campuses.",
-    "category": "Education",
+    "id": "art-12",
+    "title": "Gandaki Province Announces High-Tech Agricultural Drone Subsidy for Farmers",
+    "slug": "gandaki-province-announces-high-tech-agricultural-drone-subsidy-for-farmers",
+    "subtitle": "Over 5,000 agrarian cooperatives receive automated crop-spraying and soil-analysis drones to boost organic cardamom and tea yields.",
+    "content": "Agriculture modernization in provincial Nepal took a giant leap forward today as Gandaki Province unveiled its agrarian autonomy initiative.\n\n### Precision Farming\nFarmers equipped with AI-guided drones can now pinpoint irrigation needs and nutrient deficiencies across rugged terraced farmlands with centimeter-level precision.",
+    "category": "Province News",
     "tags": [
-      "Education",
-      "AI Tutors",
-      "University",
-      "EdTech"
+      "Gandaki",
+      "Agriculture",
+      "Province News",
+      "Drones"
     ],
     "author": {
       "name": "Harendra Lamsal",
@@ -344,42 +373,13 @@
     },
     "publishedAt": "2026-07-11T09:31:24.768+00:00",
     "readTime": "4 min read",
-    "views": 18900,
-    "likes": 1450,
-    "bookmarks": 510,
+    "views": 14200,
+    "likes": 980,
+    "bookmarks": 390,
     "featured": false,
     "breaking": false,
-    "image": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1200",
-    "aiSummary": "Tribhuvan University deploys localized AI tutors across campuses, offering multilingual academic coaching in regional languages.",
-    "sentiment": "Tech-Optimistic"
-  },
-  {
-    "id": "art-18",
-    "title": "Quantum Neural Labs Achieve Breakthrough in Room-Temperature Superconductors",
-    "slug": "quantum-neural-labs-achieve-breakthrough-in-room-temperature-superconductors",
-    "subtitle": "New material matrix enables lossless power transmission across national grids with zero thermal dissipation.",
-    "content": "Physicists at the Quantum Neural Research Complex have synthesized a stable room-temperature superconductor alloy capable of revolutionizing global energy distribution.",
-    "category": "Science & AI",
-    "tags": [
-      "Science",
-      "Superconductors",
-      "Physics",
-      "Clean Energy"
-    ],
-    "author": {
-      "name": "Harendra Lamsal",
-      "title": "Editor-in-Chief",
-      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
-    },
-    "publishedAt": "2026-07-11T09:31:24.768+00:00",
-    "readTime": "6 min read",
-    "views": 41200,
-    "likes": 4920,
-    "bookmarks": 2100,
-    "featured": true,
-    "breaking": false,
-    "image": "https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&q=80&w=1200",
-    "aiSummary": "Breakthrough room-temperature superconductor alloy enables lossless power transmission across national grids with zero thermal dissipation.",
+    "image": "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&q=80&w=1200",
+    "aiSummary": "Gandaki Province subsidizes AI agricultural drones for 5,000 farming cooperatives to boost tea and cardamom yields.",
     "sentiment": "Tech-Optimistic"
   },
   {

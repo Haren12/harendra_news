@@ -3,6 +3,7 @@ import { Article } from '../types';
 import { Sparkles, Clock, Eye, ArrowRight, ChevronLeft, ChevronRight, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Language, translations } from '../utils/translations';
+import { getAuthorAvatar, harendraAvatar } from '../utils/avatar';
 
 interface HeroSliderProps {
   articles: Article[];
@@ -124,7 +125,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({ articles, onSelectArticl
               </button>
 
               <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
-                <img src={current.author.avatar} alt={current.author.name} className="w-7 h-7 rounded-full border border-cyan-500/40 object-cover" />
+                <img src={getAuthorAvatar(current.author)} alt={current.author.name} className="w-7 h-7 rounded-full border border-cyan-500/40 object-cover" onError={(e) => { (e.target as HTMLImageElement).src = harendraAvatar; }} />
                 <span>{t.by} <strong className="text-slate-200">{current.author.name}</strong></span>
               </div>
             </div>

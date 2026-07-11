@@ -367,6 +367,52 @@ export default function App() {
               onSelectArticle={(art) => setSelectedArticle(art)} 
               currentLanguage={currentLanguage}
             />
+
+            {/* CEO & Founder Harendra Lamsal Executive Spotlight Banner */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-6">
+              <div className="bg-gradient-to-r from-slate-900 via-cyan-950/40 to-slate-900 border border-cyan-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-cyan-950/50 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div className="flex items-center gap-5 z-10">
+                  <div className="relative shrink-0">
+                    <img 
+                      src={harendraAvatar} 
+                      alt="Harendra Lamsal - CEO & Founder" 
+                      className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover border-2 border-cyan-400 shadow-xl shadow-cyan-500/40 bg-slate-800 brightness-110 contrast-110"
+                      onError={(e) => { (e.target as HTMLImageElement).src = harendraAvatar; }}
+                    />
+                    <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-slate-950 animate-pulse"></span>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <span className="text-[10px] font-mono bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded border border-cyan-500/40 font-bold">EDITOR-IN-CHIEF & FOUNDER</span>
+                      <span className="text-[10px] font-mono text-slate-400">Kathmandu, Nepal</span>
+                    </div>
+                    <h2 className="text-xl sm:text-2xl font-bold text-white font-sans tracking-tight">Harendra Lamsal</h2>
+                    <p className="text-xs sm:text-sm text-cyan-400 font-mono mt-0.5">CEO & Lead Architect, Nexus AI Intelligence Network</p>
+                    <p className="text-xs text-slate-300 font-sans mt-2 max-w-xl">
+                      Leading sovereign digital infrastructures, quantum fiber rollouts across 753 municipalities, and autonomous intelligence journalism for Nepal and South Asia.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-3 font-mono text-xs z-10 shrink-0">
+                  <a 
+                    href="mailto:harendralamsal4140@gmail.com" 
+                    className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-5 py-3 rounded-xl transition-all flex items-center gap-2 font-bold shadow-lg shadow-cyan-500/20"
+                  >
+                    <span>Direct Dispatch</span>
+                  </a>
+                  <a 
+                    href="https://www.linkedin.com/in/harendra-lamsal-728a6122b" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="bg-slate-900 hover:bg-slate-800 text-slate-200 border border-cyan-500/30 px-5 py-3 rounded-xl transition-all flex items-center gap-2 font-bold"
+                  >
+                    <span>LinkedIn Profile</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
             <CategoryNav 
               selectedCategory={selectedCategory} 
               onSelectCategory={setSelectedCategory} 

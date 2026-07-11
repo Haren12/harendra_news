@@ -3,6 +3,7 @@ import { Article, Category } from '../types';
 import { Clock, Eye, Heart, Bookmark, Sparkles, ArrowRight, TrendingUp } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Language, translations } from '../utils/translations';
+import { getAuthorAvatar, harendraAvatar } from '../utils/avatar';
 
 interface ArticleFeedProps {
   articles: Article[];
@@ -140,7 +141,7 @@ export const ArticleFeed: React.FC<ArticleFeedProps> = ({
                 {/* Footer Meta & Actions */}
                 <div className="px-6 pb-6 pt-0 flex items-center justify-between border-t border-cyan-500/10 mt-auto pt-4">
                   <div className="flex items-center gap-2">
-                    <img src={article.author.avatar} alt={article.author.name} className="w-6 h-6 rounded-full border border-cyan-500/30 object-cover" />
+                    <img src={getAuthorAvatar(article.author)} alt={article.author.name} className="w-6 h-6 rounded-full border border-cyan-500/30 object-cover" onError={(e) => { (e.target as HTMLImageElement).src = harendraAvatar; }} />
                     <span className="text-xs text-slate-300 font-mono truncate max-w-[120px]">{article.author.name}</span>
                   </div>
 

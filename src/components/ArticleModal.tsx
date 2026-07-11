@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Article, Comment } from '../types';
-import harendraAvatar from '../assets/harendra_avatar.jpg';
+import { getAuthorAvatar, harendraAvatar } from '../utils/avatar';
 import { 
   X, 
   Clock, 
@@ -273,9 +273,10 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4 px-5 border-y border-cyan-500/20 bg-slate-900/40 rounded-2xl">
               <div className="flex items-center gap-3.5">
                 <img 
-                  src={authorObj.avatar} 
+                  src={getAuthorAvatar(authorObj)} 
                   alt={authorObj.name} 
                   className="w-12 h-12 rounded-full border-2 border-cyan-500/40 object-cover shadow-lg" 
+                  onError={(e) => { (e.target as HTMLImageElement).src = harendraAvatar; }}
                 />
                 <div>
                   <h4 className="font-bold text-white text-sm sm:text-base font-sans">{authorObj.name}</h4>
