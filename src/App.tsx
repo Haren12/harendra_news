@@ -98,7 +98,7 @@ export default function App() {
       if (isSupabaseConfigured) {
         articles.forEach(async (art) => {
           try {
-            await supabase.from('articles').upsert({
+            const { error } = await supabase.from('articles').upsert({
               id: art.id,
               title: art.title,
               slug: art.slug || art.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
@@ -117,8 +117,11 @@ export default function App() {
               sentiment: art.sentiment,
               published_at: art.publishedAt || new Date().toISOString()
             }, { onConflict: 'id' });
+            if (error) {
+              console.error('Supabase article upsert error:', error.message);
+            }
           } catch (supErr) {
-            // ignore
+            console.error('Supabase article upsert exception:', supErr);
           }
         });
       }
@@ -136,8 +139,20 @@ export default function App() {
 
   // Language & Auth state
   const [currentLanguage, setCurrentLanguage] = useState<Language>('ne'); // Default to Nepali as requested by user
-  const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
-  const [currentUserName, setCurrentUserName] = useState<string | null>(null);
+  const [currentUserRole, setCurrentUserRole] = useState<string | null>(() => {
+    const role = localStorage.getItem('admin_role');
+    const expiry = localStorage.getItem('admin_expiry');
+    if (role && expiry && Date.now() < Number(expiry)) {
+      return role;
+    }
+    localStorage.removeItem('admin_role');
+    localStorage.removeItem('admin_name');
+    localStorage.removeItem('admin_expiry');
+    return null;
+  });
+  const [currentUserName, setCurrentUserName] = useState<string | null>(() => {
+    return localStorage.getItem('admin_name');
+  });
   const [sessionSeconds, setSessionSeconds] = useState<number>(300); // 5 minutes = 300 seconds
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -161,27 +176,35 @@ export default function App() {
     if (!currentUserRole) return;
 
     setSessionSeconds(300);
+    localStorage.setItem('admin_expiry', String(Date.now() + 300000));
 
     const timer = setInterval(() => {
       setSessionSeconds(prev => {
-        if (prev <= 1) {
+        const expiry = Number(localStorage.getItem('admin_expiry') || 0);
+        if (Date.now() >= expiry || prev <= 1) {
           clearInterval(timer);
           setCurrentUserRole(null);
           setCurrentUserName(null);
+          localStorage.removeItem('admin_role');
+          localStorage.removeItem('admin_name');
+          localStorage.removeItem('admin_expiry');
           setSystemLogs(l => [{
             id: `log-${Date.now()}`,
             timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
             level: 'warning',
-            message: `Admin session expired (5-minute security limit). Auto-logged out.`,
+            message: `Admin session expired (5-minute inactivity limit). Auto-logged out.`,
             source: 'SecurityManager'
           }, ...l]);
           return 0;
         }
-        return prev - 1;
+        const remaining = Math.max(0, Math.floor((expiry - Date.now()) / 1000));
+        return remaining;
       });
     }, 1000);
 
     const handleActivity = () => {
+      const newExpiry = Date.now() + 300000;
+      localStorage.setItem('admin_expiry', String(newExpiry));
       setSessionSeconds(300);
     };
 
@@ -285,6 +308,9 @@ export default function App() {
   const handleLoginSuccess = (role: string, name: string) => {
     setCurrentUserRole(role);
     setCurrentUserName(name);
+    localStorage.setItem('admin_role', role);
+    localStorage.setItem('admin_name', name);
+    localStorage.setItem('admin_expiry', String(Date.now() + 300000));
     const newLog: SystemLog = {
       id: `log-${Date.now()}`,
       timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
@@ -298,9 +324,12 @@ export default function App() {
   const handleLogout = () => {
     setCurrentUserRole(null);
     setCurrentUserName(null);
+    localStorage.removeItem('admin_role');
+    localStorage.removeItem('admin_name');
+    localStorage.removeItem('admin_expiry');
   };
 
-  const currentLangArticles = articles.filter(a => currentLanguage === 'ne' ? Boolean(a.titleNe) : !Boolean(a.titleNe));
+  const currentLangArticles = articles;
   const breakingNewsArticle = currentLangArticles.find(a => a.breaking) || currentLangArticles[0] || articles[0];
   const breakingNewsTitle = currentLanguage === 'ne' 
     ? (breakingNewsArticle?.titleNe || breakingNewsArticle?.title || 'नरेन्द्र लम्साल न्युज') 

@@ -13,14 +13,7 @@ interface HeroSliderProps {
 export const HeroSlider: React.FC<HeroSliderProps> = ({ articles, onSelectArticle, currentLanguage }) => {
   const t = translations[currentLanguage];
   const langFiltered = articles.filter(a => {
-    const isFeaturedMatch = a.featured || a.breaking;
-    if (!isFeaturedMatch) return false;
-    if (currentLanguage === 'ne') {
-      return Boolean(a.titleNe);
-    } else if (currentLanguage === 'en') {
-      return !Boolean(a.titleNe);
-    }
-    return true;
+    return Boolean(a.featured || a.breaking);
   });
 
   const featured = langFiltered;

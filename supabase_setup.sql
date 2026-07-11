@@ -2,7 +2,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
 CREATE TABLE IF NOT EXISTS public.profiles (
-    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    id TEXT PRIMARY KEY,
     username VARCHAR(100) UNIQUE,
     full_name VARCHAR(255),
     avatar_url TEXT,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 );
 
 CREATE TABLE IF NOT EXISTS public.categories (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id TEXT PRIMARY KEY,
     name VARCHAR(100) UNIQUE NOT NULL,
     slug VARCHAR(100) UNIQUE NOT NULL,
     description TEXT,
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS public.categories (
 );
 
 CREATE TABLE IF NOT EXISTS public.authors (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id TEXT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     title VARCHAR(255),
     avatar TEXT,
@@ -31,14 +31,14 @@ CREATE TABLE IF NOT EXISTS public.authors (
 );
 
 CREATE TABLE IF NOT EXISTS public.articles (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id TEXT PRIMARY KEY,
     title TEXT NOT NULL,
     slug TEXT,
     subtitle TEXT,
     content TEXT NOT NULL,
     category VARCHAR(100) NOT NULL,
     tags TEXT[],
-    author_id UUID REFERENCES authors(id) ON DELETE SET NULL,
+    author_id TEXT,
     published_at TIMESTAMPTZ DEFAULT NOW(),
     read_time VARCHAR(50) DEFAULT '5 min read',
     views INT DEFAULT 0,
@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS public.articles (
 );
 
 CREATE TABLE IF NOT EXISTS public.comments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    article_id UUID REFERENCES articles(id) ON DELETE CASCADE,
+    id TEXT PRIMARY KEY,
+    article_id TEXT REFERENCES articles(id) ON DELETE CASCADE,
     author_name VARCHAR(255) NOT NULL,
     author_avatar TEXT,
     content TEXT NOT NULL,
@@ -64,21 +64,21 @@ CREATE TABLE IF NOT EXISTS public.comments (
 );
 
 CREATE TABLE IF NOT EXISTS public.bookmarks (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    article_id UUID REFERENCES articles(id) ON DELETE CASCADE,
-    user_id UUID,
+    id TEXT PRIMARY KEY,
+    article_id TEXT REFERENCES articles(id) ON DELETE CASCADE,
+    user_id TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS public.likes (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    article_id UUID REFERENCES articles(id) ON DELETE CASCADE,
-    user_id UUID,
+    id TEXT PRIMARY KEY,
+    article_id TEXT REFERENCES articles(id) ON DELETE CASCADE,
+    user_id TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS public.media_library (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id TEXT PRIMARY KEY,
     file_name VARCHAR(255) NOT NULL,
     file_url TEXT NOT NULL,
     file_size VARCHAR(50),
@@ -87,14 +87,14 @@ CREATE TABLE IF NOT EXISTS public.media_library (
 );
 
 CREATE TABLE IF NOT EXISTS public.subscribers (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id TEXT PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     status VARCHAR(50) DEFAULT 'active',
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS public.advertisements (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id TEXT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     position VARCHAR(100) NOT NULL,
     image_url TEXT,

@@ -26,14 +26,7 @@ export const ArticleFeed: React.FC<ArticleFeedProps> = ({
   currentLanguage,
 }) => {
   const t = translations[currentLanguage];
-  const langFiltered = articles.filter(a => {
-    if (currentLanguage === 'ne') {
-      return Boolean(a.titleNe);
-    } else if (currentLanguage === 'en') {
-      return !Boolean(a.titleNe);
-    }
-    return true;
-  });
+  const langFiltered = articles;
 
   const filtered = langFiltered.filter(a => selectedCategory === 'All' || a.category === selectedCategory);
 
