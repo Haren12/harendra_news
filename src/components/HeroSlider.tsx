@@ -26,6 +26,8 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({ articles, onSelectArticl
   if (featured.length === 0) return null;
 
   const current = featured[currentIndex];
+  const displayTitle = currentLanguage === 'ne' ? (current.titleNe || current.title) : current.title;
+  const displaySubtitle = currentLanguage === 'ne' ? (current.subtitleNe || current.subtitle) : current.subtitle;
 
   const handleNext = () => {
     setCurrentIndex((prev) => (prev + 1) % featured.length);
@@ -59,7 +61,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({ articles, onSelectArticl
         </div>
 
         {/* Content Container */}
-        <div className="relative z-10 p-6 sm:p-10 lg:p-14 min-h-[420px] sm:min-h-[480px] flex flex-col justify-between">
+        <div className="relative z-10 p-6 sm:p-10 lg:p-14 min-h-[460px] sm:min-h-[520px] h-full flex flex-col justify-between overflow-visible">
           {/* Top Meta */}
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
@@ -80,27 +82,28 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({ articles, onSelectArticl
           </div>
 
           {/* Main Headline & Subtitle */}
-          <div className="max-w-3xl my-6">
+          <div className="max-w-3xl my-6 overflow-visible">
             <AnimatePresence mode="wait">
               <motion.div
                 key={current.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.4 }}
+                className="overflow-visible"
               >
-                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight mb-4 font-sans drop-shadow-md">
-                  {current.title}
+                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-snug mb-4 font-sans drop-shadow-md break-words">
+                  {displayTitle}
                 </h1>
-                <p className="text-slate-300 text-sm sm:text-base line-clamp-2 sm:line-clamp-3 mb-6 font-sans">
-                  {current.subtitle}
+                <p className="text-slate-300 text-sm sm:text-base leading-relaxed line-clamp-3 mb-6 font-sans break-words">
+                  {displaySubtitle}
                 </p>
 
                 {/* AI Summary Badge */}
                 {current.aiSummary && (
                   <div className="inline-flex items-center gap-2 bg-cyan-950/70 border border-cyan-500/30 rounded-xl px-4 py-2 text-xs text-cyan-200 mb-6 backdrop-blur-md">
                     <Sparkles className="w-4 h-4 text-cyan-400 shrink-0" />
-                    <span className="line-clamp-1"><strong className="text-cyan-400">{t.aiBrief}</strong> {current.aiSummary}</span>
+                    <span className="line-clamp-2"><strong className="text-cyan-400">{t.aiBrief}</strong> {current.aiSummary}</span>
                   </div>
                 )}
               </motion.div>

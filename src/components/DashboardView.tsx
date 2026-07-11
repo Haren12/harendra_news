@@ -39,6 +39,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onOpenSupabaseConfig,
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'content' | 'media' | 'ads' | 'newsletter' | 'health' | 'logs' | 'users' | 'settings'>('overview');
+  const [articleToDelete, setArticleToDelete] = useState<Article | null>(null);
 
   const totalViews = articles.reduce((acc, a) => acc + a.views, 0);
 
@@ -220,7 +221,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <td className="py-4">{art.views.toLocaleString()}</td>
                     <td className="py-4">
                       <button
-                        onClick={() => onDeleteArticle(art.id)}
+                        onClick={() => setArticleToDelete(art)}
                         className="p-2 rounded-xl bg-rose-500/20 text-rose-400 hover:bg-rose-500/30 border border-rose-500/30 cursor-pointer"
                         title="Delete Dispatch"
                       >
@@ -322,6 +323,43 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             >
               View Full PostgreSQL Schema & RLS Setup
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {articleToDelete && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-rose-500/40 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-6 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                <Trash2 className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white font-sans">Confirm Dispatch Deletion</h3>
+                <p className="text-xs text-slate-400 font-mono">This action is permanent and cannot be undone.</p>
+              </div>
+            </div>
+            <div className="bg-slate-950 p-4 rounded-2xl border border-rose-500/25">
+              <p className="text-xs text-slate-300 font-sans font-medium line-clamp-2">{articleToDelete.title}</p>
+            </div>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                onClick={() => setArticleToDelete(null)}
+                className="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white font-mono text-xs cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  onDeleteArticle(articleToDelete.id);
+                  setArticleToDelete(null);
+                }}
+                className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold font-mono text-xs cursor-pointer shadow-lg shadow-rose-600/30"
+              >
+                Yes, Delete Dispatch
+              </button>
+            </div>
           </div>
         </div>
       )}

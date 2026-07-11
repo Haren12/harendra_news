@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Article, Category, SystemLog, Author } from './types';
+import { CheckCircle2, X } from 'lucide-react';
 import { mockArticles, mockAuthors, mockSystemLogs } from './data/mockArticles';
 import { Navbar } from './components/Navbar';
 import { HeroSlider } from './components/HeroSlider';
@@ -68,8 +69,66 @@ export default function App() {
 
   // Language & Auth state
   const [currentLanguage, setCurrentLanguage] = useState<Language>('ne'); // Default to Nepali as requested by user
-  const [currentUserRole, setCurrentUserRole] = useState<string | null>('Administrator');
-  const [currentUserName, setCurrentUserName] = useState<string | null>('Chief Editor (Admin)');
+  const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
+  const [currentUserName, setCurrentUserName] = useState<string | null>(null);
+  const [sessionSeconds, setSessionSeconds] = useState<number>(300); // 5 minutes = 300 seconds
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const handleOpenAIWriter = () => {
+    if (!currentUserRole) {
+      setIsAdminLoginOpen(true);
+      return;
+    }
+    setIsAIWriterOpen(true);
+  };
+
+  const handleOpenDashboard = () => {
+    if (!currentUserRole) {
+      setIsAdminLoginOpen(true);
+      return;
+    }
+    setCurrentView('dashboard');
+  };
+
+  useEffect(() => {
+    if (!currentUserRole) return;
+
+    setSessionSeconds(300);
+
+    const timer = setInterval(() => {
+      setSessionSeconds(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setCurrentUserRole(null);
+          setCurrentUserName(null);
+          setSystemLogs(l => [{
+            id: `log-${Date.now()}`,
+            timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
+            level: 'warning',
+            message: `Admin session expired (5-minute security limit). Auto-logged out.`,
+            source: 'SecurityManager'
+          }, ...l]);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    const handleActivity = () => {
+      setSessionSeconds(300);
+    };
+
+    window.addEventListener('mousemove', handleActivity);
+    window.addEventListener('keydown', handleActivity);
+    window.addEventListener('click', handleActivity);
+
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener('mousemove', handleActivity);
+      window.removeEventListener('keydown', handleActivity);
+      window.removeEventListener('click', handleActivity);
+    };
+  }, [currentUserRole]);
 
   // Modals & Drawers state
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -129,6 +188,8 @@ export default function App() {
       source: 'GeminiWriter'
     };
     setSystemLogs(prev => [newLog, ...prev]);
+    setSuccessMessage(`Successfully published dispatch: "${newArticle.title}"!`);
+    setTimeout(() => setSuccessMessage(null), 4500);
   };
 
   const handleDeleteArticle = (id: string) => {
@@ -173,8 +234,8 @@ export default function App() {
       <Navbar
         onOpenSearch={() => setIsSearchOpen(true)}
         onOpenBookmarks={() => setIsBookmarksOpen(true)}
-        onOpenAIWriter={() => setIsAIWriterOpen(true)}
-        onOpenDashboard={() => setCurrentView('dashboard')}
+        onOpenAIWriter={handleOpenAIWriter}
+        onOpenDashboard={handleOpenDashboard}
         onOpenSupabaseConfig={() => setIsSupabaseConfigOpen(true)}
         onOpenAdminLogin={() => setIsAdminLoginOpen(true)}
         onOpenNepaliPatro={() => setIsNepaliPatroOpen(true)}
@@ -187,6 +248,7 @@ export default function App() {
         currentUserRole={currentUserRole}
         currentUserName={currentUserName}
         onLogout={handleLogout}
+        sessionSeconds={sessionSeconds}
       />
 
       {/* Main View Router */}
@@ -292,6 +354,17 @@ export default function App() {
       <LiveAIChatWidget />
       <GoogleTranslateWidget />
       <NepaliUnicodeHelper />
+
+      {/* Success Notification Toast */}
+      {successMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-emerald-950/90 backdrop-blur-xl border border-emerald-500/50 text-emerald-200 px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-5 duration-300">
+          <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+          <span className="text-xs font-mono font-medium">{successMessage}</span>
+          <button onClick={() => setSuccessMessage(null)} className="ml-2 text-emerald-400 hover:text-white cursor-pointer">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

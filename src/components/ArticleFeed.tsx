@@ -61,6 +61,8 @@ export const ArticleFeed: React.FC<ArticleFeedProps> = ({
             const isBookmarked = bookmarkedIds.includes(article.id);
             const isLiked = likedIds.includes(article.id);
             const itemCategoryTranslated = t.categories[article.category as keyof typeof t.categories] || article.category;
+            const displayTitle = currentLanguage === 'ne' ? (article.titleNe || article.title) : article.title;
+            const displaySubtitle = currentLanguage === 'ne' ? (article.subtitleNe || article.subtitle) : article.subtitle;
 
             return (
               <motion.article
@@ -118,11 +120,11 @@ export const ArticleFeed: React.FC<ArticleFeedProps> = ({
                       onClick={() => onSelectArticle(article)}
                       className="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors cursor-pointer font-sans leading-snug mb-2 line-clamp-2"
                     >
-                      {article.title}
+                      {displayTitle}
                     </h3>
 
                     <p className="text-slate-400 text-xs sm:text-sm line-clamp-2 font-sans mb-4">
-                      {article.subtitle}
+                      {displaySubtitle}
                     </p>
 
                     {/* AI Summary Badge */}

@@ -112,11 +112,17 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
 
   const displayTitle = translatedData 
     ? translatedData.title 
-    : (readerLang === 'ne' && article.titleNe) ? article.titleNe : article.title;
-  const displaySubtitle = (readerLang === 'ne' && article.subtitleNe) ? article.subtitleNe : article.subtitle;
+    : readerLang === 'ne' 
+      ? (article.titleNe || article.title) 
+      : article.title;
+  const displaySubtitle = readerLang === 'ne' 
+    ? (article.subtitleNe || article.subtitle) 
+    : article.subtitle;
   const displayContent = translatedData 
     ? translatedData.content 
-    : (readerLang === 'ne' && article.contentNe) ? article.contentNe : article.content;
+    : readerLang === 'ne' 
+      ? (article.contentNe || article.content) 
+      : article.content;
 
   const authorObj = article.author || {
     name: 'Harendra Lamsal',
