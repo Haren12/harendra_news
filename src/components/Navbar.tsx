@@ -91,7 +91,17 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Language Switcher & Security Status */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* Nepali Unicode Tool Button */}
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('open-unicode-helper'))}
+            className="flex items-center gap-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer shadow-sm"
+            title="Nepali Unicode Typing Assistant"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+            <span>नेपाली Unicode</span>
+          </button>
+
           {/* Language Switcher Buttons */}
           <div className="flex items-center bg-slate-900 border border-cyan-500/30 rounded-lg p-0.5">
             <Globe className="w-3.5 h-3.5 text-cyan-400 ml-1.5 mr-1" />

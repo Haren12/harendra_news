@@ -59,6 +59,10 @@ export interface Article {
   slug?: string;
   subtitle: string;
   content: string;
+  languageOption?: 'en' | 'ne' | 'both';
+  titleNe?: string;
+  subtitleNe?: string;
+  contentNe?: string;
   category: Category;
   tags: string[];
   author: Author;

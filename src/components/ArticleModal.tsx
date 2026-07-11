@@ -19,6 +19,7 @@ import {
   Tag
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { ShareModal } from './ShareModal';
 
 interface ArticleModalProps {
   article: Article | null;
@@ -47,6 +48,10 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
   const [isTranslating, setIsTranslating] = useState(false);
   const [commentInput, setCommentInput] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
+  const [readerLang, setReaderLang] = useState<'en' | 'ne' | 'both'>(
+    article.languageOption === 'ne' ? 'ne' : (article.languageOption === 'both' || article.titleNe) ? 'both' : 'en'
+  );
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   // Text to Speech using Web Speech API
   const handleToggleSpeech = () => {
@@ -105,19 +110,30 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
     setCommentInput('');
   };
 
-  const displayTitle = translatedData ? translatedData.title : article.title;
-  const displayContent = translatedData ? translatedData.content : article.content;
+  const displayTitle = translatedData 
+    ? translatedData.title 
+    : (readerLang === 'ne' && article.titleNe) ? article.titleNe : article.title;
+  const displaySubtitle = (readerLang === 'ne' && article.subtitleNe) ? article.subtitleNe : article.subtitle;
+  const displayContent = translatedData 
+    ? translatedData.content 
+    : (readerLang === 'ne' && article.contentNe) ? article.contentNe : article.content;
+
+  const authorObj = article.author || {
+    name: 'Harendra Lamsal',
+    role: 'Chief Editor & Publisher',
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100'
+  };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/90 backdrop-blur-2xl flex justify-center p-0 sm:p-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/90 backdrop-blur-2xl flex justify-center p-2 sm:p-6">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 30 }}
-        className="w-full max-w-4xl bg-slate-950 border border-cyan-500/30 sm:rounded-3xl shadow-2xl shadow-cyan-950/80 overflow-hidden flex flex-col min-h-screen sm:min-h-0"
+        className="w-full max-w-4xl bg-slate-950 border border-cyan-500/30 sm:rounded-3xl shadow-2xl shadow-cyan-950/80 my-auto flex flex-col"
       >
         {/* Sticky Header Bar */}
-        <div className="sticky top-0 z-20 bg-slate-950/90 backdrop-blur-xl border-b border-cyan-500/20 px-4 sm:px-8 py-4 flex items-center justify-between">
+        <div className="sticky top-0 z-20 bg-slate-950/95 backdrop-blur-xl border-b border-cyan-500/20 px-4 sm:px-8 py-4 flex items-center justify-between rounded-t-3xl">
           <button
             onClick={() => {
               if (isPlayingAudio) window.speechSynthesis.cancel();
@@ -173,15 +189,11 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
             </button>
 
             <button
-              onClick={() => {
-                navigator.clipboard.writeText(window.location.href);
-                setCopiedLink(true);
-                setTimeout(() => setCopiedLink(false), 2000);
-              }}
+              onClick={() => setIsShareModalOpen(true)}
               className="p-2.5 rounded-xl bg-slate-900 text-slate-300 hover:text-cyan-300 border border-cyan-500/20 transition-all cursor-pointer"
-              title="Share Link"
+              title="Share Report"
             >
-              {copiedLink ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
+              <Share2 className="w-4 h-4" />
             </button>
 
             <button
@@ -204,11 +216,42 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
                 {article.category}
               </span>
               <span className="text-xs text-cyan-400 font-mono flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5" /> {article.readTime}
+                <Clock className="w-3.5 h-3.5" /> {article.readTime || '3 min read'}
               </span>
               <span className="text-xs text-slate-400 font-mono flex items-center gap-1">
-                <Eye className="w-3.5 h-3.5" /> {article.views.toLocaleString()} views
+                <Eye className="w-3.5 h-3.5" /> {(article.views || 145).toLocaleString()} views
               </span>
+            </div>
+
+            {/* Language Switcher for Readers */}
+            <div className="flex flex-wrap items-center gap-2 bg-slate-900/90 p-2.5 rounded-2xl border border-cyan-500/30 mb-6 font-mono text-xs w-fit">
+              <span className="text-cyan-400 px-2 flex items-center gap-1.5 font-bold">
+                <Languages className="w-4 h-4" /> भाषा / Language:
+              </span>
+              <button
+                onClick={() => setReaderLang('en')}
+                className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
+                  readerLang === 'en' ? 'bg-cyan-500 text-slate-950 shadow' : 'text-slate-300 hover:text-white bg-slate-950'
+                }`}
+              >
+                English
+              </button>
+              <button
+                onClick={() => setReaderLang('ne')}
+                className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
+                  readerLang === 'ne' ? 'bg-cyan-500 text-slate-950 shadow' : 'text-slate-300 hover:text-white bg-slate-950'
+                }`}
+              >
+                नेपाली (Nepali)
+              </button>
+              <button
+                onClick={() => setReaderLang('both')}
+                className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
+                  readerLang === 'both' ? 'bg-cyan-500 text-slate-950 shadow' : 'text-slate-300 hover:text-white bg-slate-950'
+                }`}
+              >
+                Both / दुवै भाषा
+              </button>
             </div>
 
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight font-sans mb-4">
@@ -216,23 +259,29 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
             </h1>
 
             <p className="text-base sm:text-lg text-slate-300 font-sans leading-relaxed mb-6">
-              {article.subtitle}
+              {displaySubtitle}
             </p>
 
-            {/* Author Byline */}
-            <div className="flex items-center justify-between py-4 border-y border-cyan-500/20">
-              <div className="flex items-center gap-3">
-                <img src={article.author.avatar} alt={article.author.name} className="w-12 h-12 rounded-full border-2 border-cyan-500/40 object-cover shadow-lg" />
+            {/* Author Byline & Publishing Info */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4 px-5 border-y border-cyan-500/20 bg-slate-900/40 rounded-2xl">
+              <div className="flex items-center gap-3.5">
+                <img 
+                  src={authorObj.avatar} 
+                  alt={authorObj.name} 
+                  className="w-12 h-12 rounded-full border-2 border-cyan-500/40 object-cover shadow-lg" 
+                />
                 <div>
-                  <h4 className="font-bold text-white text-sm font-sans">{article.author.name}</h4>
-                  <p className="text-xs text-cyan-400 font-mono">{article.author.role}</p>
+                  <h4 className="font-bold text-white text-sm sm:text-base font-sans">{authorObj.name}</h4>
+                  <p className="text-xs text-cyan-400 font-mono">{authorObj.role}</p>
                 </div>
               </div>
-              <div className="text-right text-xs text-slate-400 font-mono">
-                <p>Published: {article.publishedAt}</p>
-                <p className="text-emerald-400 flex items-center gap-1 justify-end mt-0.5">
+              <div className="flex flex-col sm:items-end text-xs text-slate-300 font-mono space-y-1">
+                <span className="flex items-center gap-1.5 text-cyan-200">
+                  <Clock className="w-3.5 h-3.5 text-cyan-400" /> Published: <strong className="text-white">{article.publishedAt || 'Just now'}</strong>
+                </span>
+                <span className="text-emerald-400 flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5" /> Verified Secure Broadcast
-                </p>
+                </span>
               </div>
             </div>
           </div>
@@ -264,29 +313,55 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
           )}
 
           {/* Article Markdown / Content */}
-          <div className="prose prose-invert max-w-none font-sans text-slate-200 space-y-6 leading-relaxed text-base sm:text-lg whitespace-pre-line">
-            {(displayContent || article.subtitle || 'Content publishing in progress...').split('\n\n').map((paragraph, idx) => {
-              if (paragraph.startsWith('### ')) {
+          {readerLang === 'both' && (article.titleNe || article.contentNe) ? (
+            <div className="space-y-12">
+              {/* English Version */}
+              <div className="space-y-6 bg-slate-900/40 p-6 sm:p-8 rounded-3xl border border-cyan-500/30">
+                <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs uppercase tracking-wider pb-2 border-b border-cyan-500/20">
+                  <span>English Edition</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-white font-sans">{article.title}</h2>
+                <div className="prose prose-invert max-w-none font-sans text-slate-200 space-y-4 leading-relaxed text-sm sm:text-base whitespace-pre-line">
+                  {article.content}
+                </div>
+              </div>
+
+              {/* Nepali Version */}
+              <div className="space-y-6 bg-slate-900/40 p-6 sm:p-8 rounded-3xl border border-cyan-500/30">
+                <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs uppercase tracking-wider pb-2 border-b border-cyan-500/20">
+                  <span>नेपाली संस्करण (Nepali Edition)</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-white font-sans">{article.titleNe || article.title}</h2>
+                <div className="prose prose-invert max-w-none font-sans text-slate-200 space-y-4 leading-relaxed text-sm sm:text-base whitespace-pre-line">
+                  {article.contentNe || article.content}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="prose prose-invert max-w-none font-sans text-slate-200 space-y-6 leading-relaxed text-base sm:text-lg whitespace-pre-line">
+              {(displayContent || article.subtitle || 'Content publishing in progress...').split('\n\n').map((paragraph, idx) => {
+                if (paragraph.startsWith('### ')) {
+                  return (
+                    <h3 key={idx} className="text-xl sm:text-2xl font-bold text-cyan-300 font-sans mt-8 mb-4 border-l-4 border-cyan-400 pl-4">
+                      {paragraph.replace('### ', '')}
+                    </h3>
+                  );
+                }
+                if (paragraph.startsWith('> ')) {
+                  return (
+                    <blockquote key={idx} className="border-l-4 border-cyan-500 bg-cyan-950/30 p-4 rounded-r-2xl italic text-cyan-100 my-6">
+                      {paragraph.replace('> ', '')}
+                    </blockquote>
+                  );
+                }
                 return (
-                  <h3 key={idx} className="text-xl sm:text-2xl font-bold text-cyan-300 font-sans mt-8 mb-4 border-l-4 border-cyan-400 pl-4">
-                    {paragraph.replace('### ', '')}
-                  </h3>
+                  <p key={idx} className="mb-4 text-slate-300">
+                    {paragraph}
+                  </p>
                 );
-              }
-              if (paragraph.startsWith('> ')) {
-                return (
-                  <blockquote key={idx} className="border-l-4 border-cyan-500 bg-cyan-950/30 p-4 rounded-r-2xl italic text-cyan-100 my-6">
-                    {paragraph.replace('> ', '')}
-                  </blockquote>
-                );
-              }
-              return (
-                <p key={idx} className="mb-4 text-slate-300">
-                  {paragraph}
-                </p>
-              );
-            })}
-          </div>
+              })}
+            </div>
+          )}
 
           {/* Tags */}
           <div className="flex flex-wrap items-center gap-2 pt-6 border-t border-cyan-500/20">
@@ -325,6 +400,14 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
               >
                 <Bookmark className="w-4 h-4" fill={isBookmarked ? 'currentColor' : 'none'} />
                 <span>{isBookmarked ? 'Saved to Vault' : 'Bookmark Report'}</span>
+              </button>
+
+              <button
+                onClick={() => setIsShareModalOpen(true)}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-mono text-xs bg-slate-900 text-slate-300 border border-cyan-500/30 hover:border-cyan-500 hover:text-cyan-300 transition-all cursor-pointer"
+              >
+                <Share2 className="w-4 h-4" />
+                <span>Share Platforms</span>
               </button>
             </div>
           </div>
@@ -378,6 +461,14 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
           </div>
         </div>
       </motion.div>
+
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        url={window.location.href}
+        title={displayTitle}
+        summary={article.subtitle}
+      />
     </div>
   );
 };

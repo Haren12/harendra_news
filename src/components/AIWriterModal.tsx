@@ -58,6 +58,7 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
   const [focusKeyword, setFocusKeyword] = useState('');
   const [tagsStr, setTagsStr] = useState('Nepal, News, Harendralamsal');
   const [readingTime, setReadingTime] = useState('5 min read');
+  const [languageOption, setLanguageOption] = useState<'en' | 'ne' | 'both'>('both');
 
   const categoriesList: Category[] = [
     'Nepal News',
@@ -156,6 +157,10 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
       slug: finalSlug,
       subtitle: finalExcerpt || 'Published via Harendralamsal Editorial Cockpit.',
       content: finalContent || finalTitle,
+      languageOption,
+      titleNe: titleNe.trim() || undefined,
+      subtitleNe: excerptNe.trim() || undefined,
+      contentNe: contentNe.trim() || undefined,
       category: selectedCategory,
       tags: tagsArray.length > 0 ? tagsArray : ['Nepal News', 'Breaking'],
       author,
@@ -328,6 +333,18 @@ export const AIWriterModal: React.FC<AIWriterModalProps> = ({ onClose, onPublish
                       {authors.map((auth) => (
                         <option key={auth.id} value={auth.id}>{auth.name} ({auth.role})</option>
                       ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-slate-300 mb-1">Publication Language Mode *</label>
+                    <select
+                      value={languageOption}
+                      onChange={(e) => setLanguageOption(e.target.value as 'en' | 'ne' | 'both')}
+                      className="w-full bg-slate-950 border border-cyan-500/30 rounded-xl p-2.5 text-white focus:outline-none focus:border-cyan-400 font-sans"
+                    >
+                      <option value="both">Both English & Nepali (Bilingual / दुवै)</option>
+                      <option value="en">English Only (अंग्रेजी)</option>
+                      <option value="ne">Nepali Only (नेपाली)</option>
                     </select>
                   </div>
                   <div>

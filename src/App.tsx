@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Article, Category, SystemLog, Author } from './types';
 import { mockArticles, mockAuthors, mockSystemLogs } from './data/mockArticles';
 import { Navbar } from './components/Navbar';
@@ -15,10 +15,50 @@ import { AdminLoginModal } from './components/AdminLoginModal';
 import { Footer } from './components/Footer';
 import { NepaliPatroModal } from './components/NepaliPatroModal';
 import { LiveAIChatWidget } from './components/LiveAIChatWidget';
+import { GoogleTranslateWidget } from './components/GoogleTranslateWidget';
+import { NepaliUnicodeHelper } from './components/NepaliUnicodeHelper';
 import { Language } from './utils/translations';
 
 export default function App() {
-  const [articles, setArticles] = useState<Article[]>(mockArticles);
+  const [articles, setArticles] = useState<Article[]>(() => {
+    try {
+      const saved = localStorage.getItem('harendra_news_articles_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load saved articles', e);
+    }
+    return mockArticles;
+  });
+
+  useEffect(() => {
+    fetch('/api/articles')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setArticles(data);
+        }
+      })
+      .catch(err => console.log('Using local articles store', err));
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('harendra_news_articles_v1', JSON.stringify(articles));
+      fetch('/api/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ articles })
+      }).catch(err => console.error('Failed to sync articles to backend', err));
+    } catch (e) {
+      console.error('Failed to save articles', e);
+    }
+  }, [articles]);
+
   const [authors] = useState<Author[]>(mockAuthors);
   const [systemLogs, setSystemLogs] = useState<SystemLog[]>(mockSystemLogs);
 
@@ -250,6 +290,8 @@ export default function App() {
       )}
 
       <LiveAIChatWidget />
+      <GoogleTranslateWidget />
+      <NepaliUnicodeHelper />
     </div>
   );
 }

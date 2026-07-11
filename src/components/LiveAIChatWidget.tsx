@@ -129,15 +129,15 @@ export const LiveAIChatWidget: React.FC = () => {
             setIsOpen(true);
             setIsMinimized(false);
           }}
-          className="relative group bg-gradient-to-r from-cyan-600 via-teal-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white p-4 rounded-full shadow-2xl flex items-center gap-3 border border-cyan-400/40 cursor-pointer"
+          className="relative group bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white px-3 py-2 rounded-xl shadow-xl flex items-center gap-2 border border-cyan-400/40 cursor-pointer"
           title="Open AI Live Chat Room"
         >
-          <div className="absolute -top-1 -right-1 flex h-3 w-3">
+          <div className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
           </div>
-          <Radio className="w-6 h-6 animate-pulse text-cyan-200" />
-          <span className="font-bold tracking-wide text-sm hidden sm:inline font-sans">Live AI Chat</span>
+          <Bot className="w-4 h-4 text-cyan-200" />
+          <span className="font-bold text-xs font-sans">Live Chat</span>
         </motion.button>
       </div>
 
