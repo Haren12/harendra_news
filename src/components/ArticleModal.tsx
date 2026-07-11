@@ -48,8 +48,8 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
   const [isTranslating, setIsTranslating] = useState(false);
   const [commentInput, setCommentInput] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
-  const [readerLang, setReaderLang] = useState<'en' | 'ne' | 'both'>(
-    article.languageOption === 'ne' ? 'ne' : (article.languageOption === 'both' || article.titleNe) ? 'both' : 'en'
+  const [readerLang, setReaderLang] = useState<'en' | 'ne'>(
+    article.titleNe || article.languageOption === 'ne' ? 'ne' : 'en'
   );
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 

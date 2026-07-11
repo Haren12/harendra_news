@@ -16,14 +16,14 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({ articles, onSelectArticl
     const isFeaturedMatch = a.featured || a.breaking;
     if (!isFeaturedMatch) return false;
     if (currentLanguage === 'ne') {
-      return Boolean(a.titleNe) || ['Nepal News', 'Local News', 'Province News', 'Education', 'Agriculture', 'Tourism', 'Economy & Banking'].includes(a.category);
+      return Boolean(a.titleNe);
     } else if (currentLanguage === 'en') {
-      return !Boolean(a.titleNe) || ['Technology', 'World News', 'Business', 'Science & AI', 'International', 'Politics', 'Entertainment', 'Crime & Security'].includes(a.category);
+      return !Boolean(a.titleNe);
     }
     return true;
   });
 
-  const featured = langFiltered.length > 0 ? langFiltered : articles.filter(a => a.featured || a.breaking);
+  const featured = langFiltered;
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {

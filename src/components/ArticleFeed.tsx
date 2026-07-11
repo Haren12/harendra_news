@@ -28,15 +28,14 @@ export const ArticleFeed: React.FC<ArticleFeedProps> = ({
   const t = translations[currentLanguage];
   const langFiltered = articles.filter(a => {
     if (currentLanguage === 'ne') {
-      return Boolean(a.titleNe) || ['Nepal News', 'Local News', 'Province News', 'Education', 'Agriculture', 'Tourism', 'Economy & Banking'].includes(a.category);
+      return Boolean(a.titleNe);
     } else if (currentLanguage === 'en') {
-      return !Boolean(a.titleNe) || ['Technology', 'World News', 'Business', 'Science & AI', 'International', 'Politics', 'Entertainment', 'Crime & Security'].includes(a.category);
+      return !Boolean(a.titleNe);
     }
     return true;
   });
 
-  const categoryFiltered = (langFiltered.length > 0 ? langFiltered : articles).filter(a => selectedCategory === 'All' || a.category === selectedCategory);
-  const filtered = categoryFiltered.length > 0 ? categoryFiltered : (selectedCategory === 'All' ? articles : articles.filter(a => a.category === selectedCategory));
+  const filtered = langFiltered.filter(a => selectedCategory === 'All' || a.category === selectedCategory);
 
   const translatedCategoryName = t.categories[selectedCategory as keyof typeof t.categories] || selectedCategory;
 

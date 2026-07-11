@@ -217,7 +217,11 @@ export default function App() {
     setCurrentUserName(null);
   };
 
-  const breakingNewsArticle = articles.find(a => a.breaking) || articles[0];
+  const currentLangArticles = articles.filter(a => currentLanguage === 'ne' ? Boolean(a.titleNe) : !Boolean(a.titleNe));
+  const breakingNewsArticle = currentLangArticles.find(a => a.breaking) || currentLangArticles[0] || articles[0];
+  const breakingNewsTitle = currentLanguage === 'ne' 
+    ? (breakingNewsArticle?.titleNe || breakingNewsArticle?.title || 'नरेन्द्र लम्साल न्युज') 
+    : (breakingNewsArticle?.title || 'Nexus Harendra News Online');
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-slate-950 relative overflow-x-hidden font-mono">
