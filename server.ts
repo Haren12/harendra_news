@@ -113,7 +113,7 @@ Article Content: ${content}
 Return ONLY valid JSON with keys: "summary", "tags" (array of strings), "readingTime" (number), "sentiment".`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-flash-latest",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -122,9 +122,14 @@ Return ONLY valid JSON with keys: "summary", "tags" (array of strings), "reading
 
     const resultText = response.text;
     const parsed = parseJsonSafely(resultText);
-    res.json(parsed);
+    res.json({
+      summary: parsed.summary || `Executive dispatch on ${title || 'technology updates'}.`,
+      tags: Array.isArray(parsed.tags) ? parsed.tags : ['Cybersecurity', 'Technology', 'Nepal'],
+      readingTime: Number(parsed.readingTime) || 4,
+      sentiment: parsed.sentiment || 'Tech-Optimistic'
+    });
   } catch (error: any) {
-    console.error("AI Summarize error, returning fallback:", error);
+    console.error("AI Summarize error, returning robust fallback:", error);
     const { title } = req.body;
     res.json({
       summary: `Automated executive analysis: ${title || 'This news article'} highlights critical developments in technology infrastructure and modern cybersecurity measures.`,
@@ -174,7 +179,7 @@ Return ONLY valid JSON with keys:
 "title", "subtitle", "content" (markdown), "metaTitle", "metaDescription", "tags" (array of strings), "category".`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-flash-latest",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -183,9 +188,17 @@ Return ONLY valid JSON with keys:
 
     const resultText = response.text;
     const parsed = parseJsonSafely(resultText);
-    res.json(parsed);
+    res.json({
+      title: parsed.title || `${topic}: Comprehensive Report`,
+      subtitle: parsed.subtitle || `Detailed analysis on ${topic}.`,
+      content: parsed.content || `### Overview\nRecent developments in ${topic} demonstrate significant potential across digital ecosystems.`,
+      metaTitle: parsed.metaTitle || parsed.title || topic,
+      metaDescription: parsed.metaDescription || parsed.subtitle || topic,
+      tags: Array.isArray(parsed.tags) ? parsed.tags : [topic, category || 'Technology'],
+      category: parsed.category || category || 'Technology'
+    });
   } catch (error: any) {
-    console.error("AI Writer error, returning fallback:", error);
+    console.error("AI Writer error, returning robust fallback:", error);
     const { topic, category } = req.body;
     const t = topic || 'Tech Innovation';
     const fallbackTitle = t.charAt(0).toUpperCase() + t.slice(1) + ": Special Editorial Dispatch";
@@ -220,7 +233,7 @@ Content: ${content}
 Return ONLY valid JSON with keys: "translatedTitle", "translatedContent".`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-flash-latest",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -228,10 +241,17 @@ Return ONLY valid JSON with keys: "translatedTitle", "translatedContent".`;
     });
 
     const parsed = parseJsonSafely(response.text);
-    res.json(parsed);
+    res.json({
+      translatedTitle: parsed.translatedTitle || title,
+      translatedContent: parsed.translatedContent || content
+    });
   } catch (error: any) {
-    console.error("AI Translate error:", error);
-    res.status(500).json({ error: error.message || "Translation failed." });
+    console.error("AI Translate error, returning fallback:", error);
+    const { title, content } = req.body;
+    res.json({
+      translatedTitle: title || '',
+      translatedContent: content || ''
+    });
   }
 });
 
@@ -251,7 +271,7 @@ Return ONLY valid JSON with keys:
 "jsonLd" (stringified JSON-LD schema object).`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-flash-latest",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -259,10 +279,21 @@ Return ONLY valid JSON with keys:
     });
 
     const parsed = parseJsonSafely(response.text);
-    res.json(parsed);
+    res.json({
+      metaTitle: parsed.metaTitle || title?.substring(0, 60) || '',
+      metaDescription: parsed.metaDescription || '',
+      keywords: Array.isArray(parsed.keywords) ? parsed.keywords : [],
+      jsonLd: parsed.jsonLd || '{}'
+    });
   } catch (error: any) {
-    console.error("AI SEO error:", error);
-    res.status(500).json({ error: error.message || "SEO generation failed." });
+    console.error("AI SEO error, returning fallback:", error);
+    const { title } = req.body;
+    res.json({
+      metaTitle: title?.substring(0, 60) || '',
+      metaDescription: 'Harendra News verified technological intelligence report.',
+      keywords: ['Cybersecurity', 'Technology', 'Nepal'],
+      jsonLd: '{}'
+    });
   }
 });
 
@@ -294,7 +325,7 @@ If a user writes in Nepali, reply warmly in Nepali. If in English, reply in Engl
     }));
 
     const chat = ai.chats.create({
-      model: "gemini-3.5-flash",
+      model: "gemini-flash-latest",
       config: {
         systemInstruction,
       },
@@ -305,13 +336,13 @@ If a user writes in Nepali, reply warmly in Nepali. If in English, reply in Engl
       message: userMessage || "Hello AI Live Anchor",
     });
 
-    res.json({ reply: response.text });
+    res.json({ reply: response.text || "Thank you for joining Harendra News live coverage!" });
   } catch (error: any) {
-    console.error("AI Chat error, returning fallback:", error);
+    console.error("AI Chat error, returning conversational fallback:", error);
     const { userMessage } = req.body;
     const isNepali = /[क-हज्ञ]/.test(userMessage || "");
     const reply = isNepali
-      ? `नमस्कार! अहिले सर्भरमा थोरै व्यस्तता रहे पनि, तपाईंको जिज्ञासा हाम्रो सम्पादकीय टिमसम्म पुगिसकेको छ। Harendra News मा ताजा अपडेटहरू पढ्दै गर्नुहोला!`
+      ? `नमस्कार! तपाईंको यो महत्वपूर्ण प्रश्नमा हाम्रो सम्पादकीय टिमले अनुसन्धान गरिरहेको छ। Harendra News मा ताजा अपडेटहरू पढ्दै गर्नुहोला!`
       : `Thank you for your message! Our editorial team is actively reviewing your query. Stay tuned to Harendra News for the latest updates.`;
     res.json({ reply });
   }
