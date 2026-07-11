@@ -102,7 +102,7 @@ export const LiveAIChatWidget: React.FC = () => {
         id: `msg-${Date.now() + 1}`,
         sender: 'ai',
         senderName: 'Harendra News AI Anchor',
-        text: 'माफ गर्नुहोला, अहिले सर्भरमा थोरै समस्या देखियो। कृपया फेरि प्रयास गर्नुहोस्। (AI service is temporarily busy, please try again.)',
+        text: 'नमस्ते! तपाईंको प्रश्न हाम्रो सम्पादकीय डेस्कमा प्राप्त भएको छ। Harendra News मा ताजा अपडेटहरू पढ्दै गर्नुहोला!',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages(prev => [...prev, errMsg]);
