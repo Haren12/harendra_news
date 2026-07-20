@@ -35,7 +35,7 @@ export const GoogleTranslateWidget: React.FC = () => {
       try {
         window.googleTranslateElementInit?.();
       } catch (e) {
-        console.error('Google translate init error', e);
+        console.warn('Google translate init error', e);
       }
     }
   }, []);

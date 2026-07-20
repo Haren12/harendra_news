@@ -41,7 +41,7 @@ export default function App() {
         }
       }
     } catch (e) {
-      console.error('Failed to load saved articles', e);
+      console.warn('Failed to load saved articles', e);
     }
     return mockArticles;
   });
@@ -115,7 +115,7 @@ export default function App() {
             console.warn('Supabase query error (falling back to local/backend):', error.message || error);
           }
         } catch (e) {
-          console.error('Supabase fetch failed, falling back', e);
+          console.warn('Supabase fetch failed, falling back', e);
         }
       }
 
@@ -145,7 +145,7 @@ export default function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ articles })
-      }).catch(err => console.error('Failed to sync articles to backend', err));
+      }).catch(err => console.warn('Failed to sync articles to backend', err));
 
       if (isSupabaseConfigured) {
         articles.forEach(async (art) => {
@@ -175,7 +175,7 @@ export default function App() {
         });
       }
     } catch (e) {
-      console.error('Failed to save articles', e);
+      console.warn('Failed to save articles', e);
     }
   }, [articles]);
 
@@ -185,6 +185,59 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState<Category>('All');
   const [currentView, setCurrentView] = useState<'home' | 'dashboard'>('home');
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+
+  // Load article from URL on initial load or articles update
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const articleId = params.get('article');
+    if (articleId && articles.length > 0) {
+      const found = articles.find(a => a.id === articleId || a.slug === articleId);
+      if (found) {
+        setSelectedArticle(found);
+      }
+    }
+  }, [articles]);
+
+  // Synchronize browser URL query parameters with selectedArticle state
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const currentArticleParam = params.get('article');
+    
+    if (selectedArticle) {
+      if (currentArticleParam !== selectedArticle.id) {
+        params.set('article', selectedArticle.id);
+        const newUrl = `${window.location.pathname}?${params.toString()}`;
+        window.history.pushState({ articleId: selectedArticle.id }, '', newUrl);
+      }
+    } else {
+      if (currentArticleParam) {
+        params.delete('article');
+        const paramStr = params.toString();
+        const newUrl = paramStr ? `${window.location.pathname}?${paramStr}` : window.location.pathname;
+        window.history.pushState(null, '', newUrl);
+      }
+    }
+  }, [selectedArticle]);
+
+  // Handle browser back/forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const articleId = params.get('article');
+      if (articleId) {
+        const found = articles.find(a => a.id === articleId || a.slug === articleId);
+        if (found) {
+          setSelectedArticle(found);
+        } else {
+          setSelectedArticle(null);
+        }
+      } else {
+        setSelectedArticle(null);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [articles]);
 
   // Language & Auth state
   const [currentLanguage, setCurrentLanguage] = useState<Language>('ne'); // Default to Nepali as requested by user

@@ -98,7 +98,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
         });
       }
     } catch (err) {
-      console.error('Translation error:', err);
+      console.warn('Translation error:', err);
     } finally {
       setIsTranslating(false);
     }
@@ -473,7 +473,15 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
       <ShareModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
-        url={window.location.href}
+        url={React.useMemo(() => {
+          try {
+            const url = new URL(window.location.href);
+            url.searchParams.set('article', article.id);
+            return url.toString();
+          } catch (e) {
+            return `${window.location.origin}${window.location.pathname}?article=${article.id}`;
+          }
+        }, [article.id])}
         title={displayTitle}
         summary={article.subtitle}
       />
