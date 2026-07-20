@@ -401,11 +401,11 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
           </div>
 
           {/* Like & Share Action Footer */}
-          <div className="flex items-center justify-between py-6 border-y border-cyan-500/20">
-            <div className="flex items-center gap-4">
+          <div className="py-6 border-y border-cyan-500/20">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
               <button
                 onClick={() => onToggleLike(article.id)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-mono text-xs border transition-all cursor-pointer ${
+                className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-mono text-xs border transition-all cursor-pointer w-full sm:w-auto ${
                   isLiked 
                     ? 'bg-rose-500 text-slate-950 font-bold border-rose-400 shadow-lg shadow-rose-500/30' 
                     : 'bg-slate-900 text-slate-300 border-cyan-500/30 hover:border-cyan-500'
@@ -417,7 +417,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
 
               <button
                 onClick={() => onToggleBookmark(article.id)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-mono text-xs border transition-all cursor-pointer ${
+                className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-mono text-xs border transition-all cursor-pointer w-full sm:w-auto ${
                   isBookmarked 
                     ? 'bg-cyan-500 text-slate-950 font-bold border-cyan-400' 
                     : 'bg-slate-900 text-slate-300 border-cyan-500/30 hover:border-cyan-500'
@@ -429,7 +429,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
 
               <button
                 onClick={() => setIsShareModalOpen(true)}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-mono text-xs bg-slate-900 text-slate-300 border border-cyan-500/30 hover:border-cyan-500 hover:text-cyan-300 transition-all cursor-pointer"
+                className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-mono text-xs bg-slate-900 text-slate-300 border border-cyan-500/30 hover:border-cyan-500 hover:text-cyan-300 transition-all cursor-pointer w-full sm:w-auto"
               >
                 <Share2 className="w-4 h-4" />
                 <span>Share Platforms</span>
@@ -490,15 +490,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
       <ShareModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
-        url={React.useMemo(() => {
-          try {
-            const url = new URL(window.location.href);
-            url.searchParams.set('article', article.id);
-            return url.toString();
-          } catch (e) {
-            return `${window.location.origin}${window.location.pathname}?article=${article.id}`;
-          }
-        }, [article.id])}
+        url={`${window.location.origin}${window.location.pathname}?article=${article.id}`}
         title={displayTitle}
         summary={article.subtitle}
       />
