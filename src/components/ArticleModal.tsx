@@ -142,6 +142,51 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
       ? (article.contentNe || article.content) 
       : article.content;
 
+  // Dynamically update document title and meta tags for SEO when reading the article
+  useEffect(() => {
+    const originalTitle = document.title;
+    
+    // 1. Update document title
+    document.title = `${displayTitle} | Nexus AI Nepal News`;
+
+    // Helper function to update or create meta tags
+    const updateOrCreateMeta = (nameOrProperty: string, contentValue: string, isProperty = false) => {
+      const attribute = isProperty ? 'property' : 'name';
+      let element = document.querySelector(`meta[${attribute}="${nameOrProperty}"]`);
+      if (!element) {
+        element = document.createElement('meta');
+        element.setAttribute(attribute, nameOrProperty);
+        document.head.appendChild(element);
+      }
+      element.setAttribute('content', contentValue);
+    };
+
+    // 2. Update description
+    const descriptionContent = displaySubtitle || article.seo?.metaDescription || '';
+    updateOrCreateMeta('description', descriptionContent);
+
+    // 3. Update Open Graph tags for social media preview
+    updateOrCreateMeta('og:title', displayTitle, true);
+    updateOrCreateMeta('og:description', descriptionContent, true);
+    updateOrCreateMeta('og:type', 'article', true);
+    updateOrCreateMeta('og:url', `${window.location.origin}${window.location.pathname}?article=${article.id}`, true);
+    if (article.image) {
+      updateOrCreateMeta('og:image', article.image, true);
+    }
+
+    // 4. Update Twitter Card tags
+    updateOrCreateMeta('twitter:title', displayTitle);
+    updateOrCreateMeta('twitter:description', descriptionContent);
+    if (article.image) {
+      updateOrCreateMeta('twitter:image', article.image);
+    }
+
+    return () => {
+      // Restore original site title when closing
+      document.title = originalTitle;
+    };
+  }, [article.id, displayTitle, displaySubtitle, article.image, article.seo?.metaDescription]);
+
   const authorObj = article.author || {
     name: 'Harendra Lamsal',
     role: 'Chief Editor & Publisher',
@@ -492,7 +537,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
         onClose={() => setIsShareModalOpen(false)}
         url={`${window.location.origin}${window.location.pathname}?article=${article.id}`}
         title={displayTitle}
-        summary={article.subtitle}
+        summary={displaySubtitle}
       />
     </div>
   );

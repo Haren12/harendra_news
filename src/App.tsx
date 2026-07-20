@@ -251,6 +251,42 @@ export default function App() {
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  // Dynamically update document title and meta description on the home page
+  useEffect(() => {
+    if (selectedArticle) return; // Let ArticleModal handle it when open
+
+    const title = currentLanguage === 'ne' 
+      ? 'नेक्सस एआई नेपाल न्यूज - हरेन्द्र लाम्साल | स्वायत्त गुप्तचर नेटवर्क' 
+      : 'Nexus AI Nepal News - Harendra Lamsal | Autonomous Intelligence Network';
+      
+    const description = currentLanguage === 'ne'
+      ? 'हरेन्द्रलम्साल दैनिक बुलेटिन। नेपाल र विश्वभरका उत्कृष्ट ब्रेकिङ समाचार, अनुसन्धान र भूराजनीतिक सुरक्षा अपडेटहरू प्राप्त गर्नुहोस्।'
+      : 'Harendra News Daily Briefing. Get elite breaking news, research dispatches, and geopolitical security updates.';
+
+    document.title = title;
+
+    // Helper function to update or create meta tags
+    const updateOrCreateMeta = (nameOrProperty: string, contentValue: string, isProperty = false) => {
+      const attribute = isProperty ? 'property' : 'name';
+      let element = document.querySelector(`meta[${attribute}="${nameOrProperty}"]`);
+      if (!element) {
+        element = document.createElement('meta');
+        element.setAttribute(attribute, nameOrProperty);
+        document.head.appendChild(element);
+      }
+      element.setAttribute('content', contentValue);
+    };
+
+    updateOrCreateMeta('description', description);
+    updateOrCreateMeta('og:title', title, true);
+    updateOrCreateMeta('og:description', description, true);
+    updateOrCreateMeta('og:type', 'website', true);
+    updateOrCreateMeta('og:url', window.location.origin, true);
+    
+    updateOrCreateMeta('twitter:title', title);
+    updateOrCreateMeta('twitter:description', description);
+  }, [selectedArticle, currentLanguage]);
+
   const handleOpenAIWriter = () => {
     if (!currentUserRole) {
       setIsAdminLoginOpen(true);
