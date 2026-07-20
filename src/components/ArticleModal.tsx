@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Article, Comment } from '../types';
 import { getAuthorAvatar, harendraAvatar } from '../utils/avatar';
 import { 
@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ShareModal } from './ShareModal';
+import { Language } from '../utils/translations';
 
 interface ArticleModalProps {
   article: Article | null;
@@ -30,6 +31,7 @@ interface ArticleModalProps {
   isBookmarked: boolean;
   isLiked: boolean;
   onAddComment: (articleId: string, comment: string) => void;
+  currentLanguage?: Language;
 }
 
 export const ArticleModal: React.FC<ArticleModalProps> = ({
@@ -40,6 +42,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
   isBookmarked,
   isLiked,
   onAddComment,
+  currentLanguage = 'ne',
 }) => {
   if (!article) return null;
 
@@ -49,9 +52,23 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
   const [isTranslating, setIsTranslating] = useState(false);
   const [commentInput, setCommentInput] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
-  const [readerLang, setReaderLang] = useState<'en' | 'ne' | 'both'>(
-    article.languageOption || 'en'
-  );
+  const [readerLang, setReaderLang] = useState<'en' | 'ne' | 'both'>(() => {
+    if (currentLanguage === 'ne') return 'ne';
+    if (currentLanguage === 'en') return 'en';
+    return article.languageOption || 'en';
+  });
+
+  // Synchronize readerLang when article or app language changes
+  useEffect(() => {
+    if (currentLanguage === 'ne') {
+      setReaderLang('ne');
+    } else if (currentLanguage === 'en') {
+      setReaderLang('en');
+    } else {
+      setReaderLang(article.languageOption || 'en');
+    }
+  }, [article.id, currentLanguage]);
+
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   // Text to Speech using Web Speech API
@@ -132,7 +149,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/90 backdrop-blur-2xl flex justify-center p-2 sm:p-6">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/98 backdrop-blur-sm flex justify-center p-2 sm:p-6">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -140,7 +157,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
         className="w-full max-w-4xl bg-slate-950 border border-cyan-500/30 sm:rounded-3xl shadow-2xl shadow-cyan-950/80 my-auto flex flex-col"
       >
         {/* Sticky Header Bar */}
-        <div className="sticky top-0 z-20 bg-slate-950/95 backdrop-blur-xl border-b border-cyan-500/20 px-4 sm:px-8 py-4 flex items-center justify-between rounded-t-3xl">
+        <div className="sticky top-0 z-20 bg-slate-950 border-b border-cyan-500/20 px-4 sm:px-8 py-4 flex items-center justify-between rounded-t-3xl">
           <button
             onClick={() => {
               if (isPlayingAudio) window.speechSynthesis.cancel();

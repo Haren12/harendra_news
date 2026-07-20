@@ -71,7 +71,7 @@ export const ArticleFeed: React.FC<ArticleFeedProps> = ({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="bg-slate-900/60 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-500/50 rounded-3xl overflow-hidden flex flex-col justify-between group shadow-xl shadow-cyan-950/30 transition-all hover:shadow-cyan-500/10 hover:-translate-y-1"
+                className="bg-slate-900/95 border border-cyan-500/20 hover:border-cyan-500/50 rounded-3xl overflow-hidden flex flex-col justify-between group shadow-xl shadow-cyan-950/30 transition-all hover:shadow-cyan-500/10 hover:-translate-y-1"
               >
                 <div>
                   {/* Article Thumbnail */}

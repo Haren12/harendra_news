@@ -185,6 +185,7 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState<Category>('All');
   const [currentView, setCurrentView] = useState<'home' | 'dashboard'>('home');
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const prevSelectedArticleRef = React.useRef<Article | null>(null);
 
   // Load article from URL on initial load or articles update
   useEffect(() => {
@@ -210,13 +211,14 @@ export default function App() {
         window.history.pushState({ articleId: selectedArticle.id }, '', newUrl);
       }
     } else {
-      if (currentArticleParam) {
+      if (prevSelectedArticleRef.current !== null && currentArticleParam) {
         params.delete('article');
         const paramStr = params.toString();
         const newUrl = paramStr ? `${window.location.pathname}?${paramStr}` : window.location.pathname;
         window.history.pushState(null, '', newUrl);
       }
     }
+    prevSelectedArticleRef.current = selectedArticle;
   }, [selectedArticle]);
 
   // Handle browser back/forward buttons
@@ -514,6 +516,7 @@ export default function App() {
           isBookmarked={bookmarkedIds.includes(selectedArticle.id)}
           isLiked={likedIds.includes(selectedArticle.id)}
           onAddComment={handleAddComment}
+          currentLanguage={currentLanguage}
         />
       )}
 
